@@ -24,7 +24,8 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { TaskCandidate, PrioritizedTask, MicroTask, CodeScaffold, DeadlineAssessment, CalendarEvent } from "../types";
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 
+  (typeof window !== "undefined" ? window.location.origin + "/_/backend" : "http://localhost:8000");
 
 // Helper to format a datetime-local string (YYYY-MM-DDTHH:mm) or return a relative string fallback
 const formatDeadlineText = (deadlineStr: string) => {
