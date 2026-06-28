@@ -110,7 +110,12 @@ class TaskCandidate(BaseModel):
 class PrioritizedTask(BaseModel):
     id: int
     title: str
+    description: str
+    tech_stack: list[str] = Field(default_factory=list)
+    estimated_total_hours: int = 2
     deadline: datetime
+    task_type: TaskType = TaskType.coding
+    preferred_app: str | None = None
     priority_rank: int
     urgency_score: int = Field(ge=1, le=100)
     risk: DeadlineRisk

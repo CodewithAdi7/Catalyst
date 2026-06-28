@@ -632,7 +632,12 @@ class SprintService:
                 PrioritizedTask(
                     id=task.id,
                     title=task.title,
+                    description=task.description,
+                    tech_stack=task.tech_stack,
+                    estimated_total_hours=task.estimated_total_hours,
                     deadline=task.deadline,
+                    task_type=task.task_type,
+                    preferred_app=task.preferred_app,
                     priority_rank=index,
                     urgency_score=urgency,
                     risk=risk,
