@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Design manual custom colors */
+  --color-studio-black: #100904;
+  --color-warm-cream: #ffedd7;
+  --color-cork-shadow: #40372e;
+  --color-dark-cork: #382416;
+  --color-burnt-sienna: #dc5000;
+  --color-grey-brown: #6c5f51;
+  --color-forest-grid: #445231;
+
+  /* Fonts */
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Typography Scale custom mappings or utilities */
+  --text-caption: 10px;
+  --leading-caption: 1.2;
+  --text-body: 14px;
+  --leading-body: 1.33;
+  --text-subheading: 18px;
+  --leading-subheading: 1.2;
+  --text-heading-sm: 24px;
+  --leading-heading-sm: 1.1;
+  --text-heading: 29px;
+  --leading-heading: 1.09;
+  --text-heading-lg: 41px;
+  --leading-heading-lg: 1;
+  --text-display: 51px;
+  --leading-display: 0.9;
+}
+
+/* Base custom styles to ensure full-bleed minimal feel without default scrollbar clutter */
+html, body {
+  background-color: var(--color-studio-black);
+  color: var(--color-warm-cream);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light theme overrides */
+.light {
+  background-color: #ffedd7; /* Warm Cream canvas */
+  color: #100904; /* Studio Black text */
+}
+
+/* Selection aesthetics */
+::selection {
+  background-color: var(--color-burnt-sienna);
+  color: var(--color-warm-cream);
+}
+
+.light ::selection {
+  background-color: var(--color-burnt-sienna);
+  color: #ffedd7;
+}
+
+/* Custom scrollbar matching the dark cork aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #100904;
+}
+
+.light ::-webkit-scrollbar-track {
+  background: #ffedd7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #382416;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #dc5000;
+}
+
+/* Light theme text and background color overrides for visibility */
+.light .light\:text-studio-black {
+  color: #100904 !important;
+}
+
+.light .text-warm-cream,
+.light .text-warm-cream\/90,
+.light .text-warm-cream\/70,
+.light .text-warm-cream\/50,
+.light .text-warm-cream\/40,
+.light .text-warm-cream\/35,
+.light .text-warm-cream\/30 {
+  color: #100904 !important;
+}
+
+.light .text-grey-brown {
+  color: #4b3e32 !important;
+}
+
+.light .border-warm-cream {
+  border-color: #100904 !important;
+}
+
+.light .border-warm-cream\/10 {
+  border-color: rgba(16, 9, 4, 0.15) !important;
+}
+
+.light .border-warm-cream\/20 {
+  border-color: rgba(16, 9, 4, 0.25) !important;
+}
+
+.light .border-warm-cream\/30 {
+  border-color: rgba(16, 9, 4, 0.35) !important;
+}
+
+/* Override background colors in cards and badges in light mode */
+.light .bg-studio-black\/40 {
+  background-color: rgba(255, 237, 215, 0.6) !important;
+}
+
+.light .bg-\[\#382416\]\/20 {
+  background-color: rgba(56, 36, 22, 0.12) !important;
+}
+
+.light .bg-\[\#100904\] {
+  background-color: #fff6eb !important;
+  border-color: rgba(56, 36, 22, 0.25) !important;
+}
+
+

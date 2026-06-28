@@ -1,0 +1,15 @@
+{
+  "name": "749fcc80-315f-40c5-983f-92fd4879234c-implement-the-first-visible-user-facing-sec",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2",
+    "vite": "^8.1.0"
+  }
+}

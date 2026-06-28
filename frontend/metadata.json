@@ -1,0 +1,6 @@
+{
+  "name": "Oryzo AI",
+  "description": "A professional landing page and interactive workspace showcasing Oryzo AI's automated task initialization and 15-minute Time Sprint Attack deep focus engine.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "419a5ad9-374e-440d-9939-660fb2369439-robotics-club-website-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2",
+    "vite": "^8.1.0"
+  }
+}
