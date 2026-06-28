@@ -48,7 +48,10 @@ class DeadlineAssessmentsResponse(BaseModel):
 class SprintService:
     def __init__(self, gemini: GeminiService | None = None) -> None:
         self.gemini = gemini or GeminiService()
-        self.workspace_root = Path.cwd() / "generated_workspace"
+        if os.getenv("VERCEL"):
+            self.workspace_root = Path("/tmp") / "generated_workspace"
+        else:
+            self.workspace_root = Path.cwd() / "generated_workspace"
 
     async def initialize_sprint(
         self, request: SprintInitializationRequest
@@ -133,7 +136,7 @@ class SprintService:
             return self._fallback_timeline(request.monolithic_task, request.tech_stack, task_count, request.task_type)
 
         web_search_context = ""
-        if request.task_type == TaskType.coding:
+        if request.task_type == TaskType.coding and not os.getenv("VERCEL"):
             try:
                 search_query = f"standard folder structure and step-by-step milestones to build: {request.monolithic_task} using {', '.join(request.tech_stack)}"
                 logger.info("Performing web search grounding for query: %s", search_query)
