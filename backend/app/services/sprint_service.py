@@ -511,17 +511,61 @@ class SprintService:
             "Do a fast clarity pass on the draft",
         ]
         verbs = writing_verbs if task_type == TaskType.writing else coding_verbs
-        return [
-            MicroTask(
-                id=index + 1,
-                title=verbs[index % len(verbs)],
-                description=(
-                    f"For '{monolithic_task}', use {stack} to complete one concrete, shippable "
-                    "15-minute increment with no planning-only work."
-                ),
+        
+        timeline_tasks = []
+        for index in range(task_count):
+            title = verbs[index % len(verbs)]
+            description = (
+                f"For '{monolithic_task}', use {stack} to complete one concrete, shippable "
+                "15-minute increment with no planning-only work."
             )
-            for index in range(task_count)
-        ]
+            
+            # For the very first milestone of a coding task, append a suggested folder structure
+            if index == 0 and task_type == TaskType.coding:
+                is_frontend = any(
+                    item.lower() in {"react", "next.js", "nextjs", "vue", "angular", "html", "javascript", "typescript", "tailwind"}
+                    for item in tech_stack
+                )
+                if is_frontend:
+                    folder_tree = (
+                        "\n\nSuggested Folder Structure:\n"
+                        "```\n"
+                        "my-project/\n"
+                        "├── src/\n"
+                        "│   ├── components/\n"
+                        "│   │   └── MicroTaskStarter.tsx\n"
+                        "│   ├── App.tsx\n"
+                        "│   ├── main.tsx\n"
+                        "│   └── index.css\n"
+                        "├── package.json\n"
+                        "└── tsconfig.json\n"
+                        "```"
+                    )
+                else:
+                    folder_tree = (
+                        "\n\nSuggested Folder Structure:\n"
+                        "```\n"
+                        "my-project/\n"
+                        "├── app/\n"
+                        "│   ├── api/\n"
+                        "│   │   └── routes.py\n"
+                        "│   ├── core/\n"
+                        "│   │   └── config.py\n"
+                        "│   └── main.py\n"
+                        "├── requirements.txt\n"
+                        "└── README.md\n"
+                        "```"
+                    )
+                description += folder_tree
+
+            timeline_tasks.append(
+                MicroTask(
+                    id=index + 1,
+                    title=title,
+                    description=description,
+                )
+            )
+        return timeline_tasks
 
     @staticmethod
     def _fallback_scaffold(tech_stack: list[str], micro_task: MicroTask, task_type: TaskType) -> CodeScaffold:
