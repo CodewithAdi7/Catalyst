@@ -123,7 +123,7 @@ export default function App() {
         className="fixed right-8 top-1/2 -translate-y-1/2 hidden lg:flex text-[10px] font-mono uppercase tracking-widest text-grey-brown opacity-50 select-none pointer-events-none z-50"
         style={{ writingMode: "vertical-rl", transform: "translateY(-50%) rotate(180deg)" }}
       >
-        PRODUCT_V_01 // INTEGRATED_AI_AGENT
+        CATALYST // INTEGRATED_AI_AGENT_WORKSPACE
       </div>
 
       {/* Tubelight Navbar */}
