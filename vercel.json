@@ -9,7 +9,6 @@
             "root": "backend",
             "routePrefix": "/_/backend",
             "entrypoint": "app/main.py",
-            "runtime": "fastapi"
         }
     }
 }
