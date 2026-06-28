@@ -161,6 +161,8 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
   const [newTaskDeadline, setNewTaskDeadline] = useState(getInitialDeadline());
   const [newTaskApp, setNewTaskApp] = useState("VS Code");
   const [isAddingTask, setIsAddingTask] = useState(false);
+  const [appInstalled, setAppInstalled] = useState(true);
+  const [activeEditor, setActiveEditor] = useState("VS Code");
 
   const addLog = (msg: string) => {
     const timestamp = new Date().toLocaleTimeString();
@@ -399,6 +401,8 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
       setTimeline(data.timeline || []);
       setScaffold(data.first_step_scaffold || null);
       setAssessments(data.deadline_assessments || []);
+      setAppInstalled(data.app_installed ?? true);
+      setActiveEditor(targetTask.preferred_app || "VS Code");
       setActiveStepIndex(0);
       setTimerSeconds(15 * 60); 
       setTimerIsRunning(true); 
@@ -443,6 +447,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
 
       setScaffold(nextScaffold);
       setActiveStepIndex(nextIdx);
+      setAppInstalled(true);
       setTimerSeconds(15 * 60);
       setTimerIsRunning(true);
       setCheckResult(null);
@@ -478,11 +483,67 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
       if (!res.ok) throw new Error("Materialization failed");
       const result = await res.json();
       setMaterializeResult(result);
+      setAppInstalled(result.app_installed ?? true);
       addLog(`📁 Files written to workspace folder: "${result.workspace_path}"`);
     } catch (e: any) {
       addLog(`❌ Workspace creation error: ${e.message}`);
     } finally {
       setIsMaterializing(false);
+    }
+  };
+
+  // Switch active editor dynamically and reload active scaffold file type and boilerplate
+  const handleSwitchActiveEditor = async (newEditor: string) => {
+    setActiveEditor(newEditor);
+    const targetTask = prioritizedQueue[selectedTaskIndex] || tasks[0];
+    if (targetTask) {
+      targetTask.preferred_app = newEditor;
+    }
+    addLog(`🔄 Active editor switched to: "${newEditor}"`);
+    
+    if (sprintId && scaffold) {
+      setIsFetchingNextStep(true);
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/sprint/next-step`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sprint_id: sprintId,
+            completed_task_id: activeStepIndex,
+            next_task_id: activeStepIndex + 1,
+            tech_stack: targetTask?.tech_stack || [],
+            next_task_description: timeline[activeStepIndex]?.description || "",
+            task_type: targetTask?.task_type || "coding",
+            preferred_app: newEditor
+          })
+        });
+        if (res.ok) {
+          const nextScaffold = await res.json();
+          setScaffold(nextScaffold);
+          
+          // Trigger a silent check of app installed status via mock materialize payload with open_app=false
+          const checkRes = await fetch(`${BACKEND_URL}/api/sprint/materialize-scaffold`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              sprint_id: sprintId,
+              task_title: targetTask?.title,
+              task_type: targetTask?.task_type || "coding",
+              scaffold: nextScaffold,
+              preferred_app: newEditor,
+              open_app: false
+            })
+          });
+          if (checkRes.ok) {
+            const checkData = await checkRes.json();
+            setAppInstalled(checkData.app_installed ?? true);
+          }
+        }
+      } catch (e: any) {
+        addLog(`❌ Editor switch error: ${e.message}`);
+      } finally {
+        setIsFetchingNextStep(false);
+      }
     }
   };
 
@@ -584,7 +645,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
       <main className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* LEFT COLUMN: Controls & Forms (3 spans) */}
-        <section className="lg:col-span-3 flex flex-col gap-6">
+        <section className="lg:col-span-3 flex flex-col gap-6 order-3 lg:order-1">
           
           {/* TASK INTAKE FORM */}
           <div className={`p-5 rounded-xl border flex flex-col gap-4 transition-all duration-300 ${
@@ -714,6 +775,10 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                     <option value="VS Code" className="bg-[#06141B] text-warm-cream">VS Code</option>
                     <option value="Cursor" className="bg-[#06141B] text-warm-cream">Cursor</option>
                     <option value="Zed Editor" className="bg-[#06141B] text-warm-cream">Zed Editor</option>
+                    <option value="Notepad" className="bg-[#06141B] text-warm-cream">Notepad</option>
+                    <option value="MS Word" className="bg-[#06141B] text-warm-cream">MS Word</option>
+                    <option value="MS PowerPoint" className="bg-[#06141B] text-warm-cream">MS PowerPoint</option>
+                    <option value="MS Excel" className="bg-[#06141B] text-warm-cream">MS Excel</option>
                     <option value="Terminal Only" className="bg-[#06141B] text-warm-cream">Terminal</option>
                   </select>
                 </div>
@@ -830,8 +895,8 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
         </section>
 
         {/* MIDDLE COLUMN: Task List & Backlog Queue (4 spans) */}
-        <section className="lg:col-span-4 flex flex-col gap-6 h-full">
-          <div className={`p-5 rounded-xl border flex flex-col h-[680px] transition-all duration-300 ${
+        <section className="lg:col-span-4 flex flex-col gap-6 h-full order-2 lg:order-2">
+          <div className={`p-5 rounded-xl border flex flex-col h-[500px] lg:h-[680px] transition-all duration-300 ${
             isLight ? "bg-white border-[#b0b7b5] shadow-sm" : "bg-[#06141B]/40 border border-cork-shadow/60 backdrop-blur-xl"
           }`}>
             <div className="flex justify-between items-center pb-2 border-b border-cork-shadow/20 mb-4">
@@ -997,7 +1062,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
         </section>
 
         {/* RIGHT COLUMN: Active Focus Timer & Scaffolding (5 spans) */}
-        <section className="lg:col-span-5 flex flex-col gap-6">
+        <section className="lg:col-span-5 flex flex-col gap-6 order-1 lg:order-3">
           
           {/* FOCUS MODE AND SPRINT TIMER */}
           <div className={`p-6 rounded-xl border relative overflow-hidden transition-all duration-300 bg-gradient-to-br ${
@@ -1124,6 +1189,12 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                           {item.description}
                         </div>
                       )}
+                      {isActive && !appInstalled && (
+                        <div className="text-[9.5px] mt-1.5 p-2 bg-red-500/10 border border-red-500/20 text-red-500 rounded font-sans font-semibold text-left flex flex-col gap-0.5">
+                          <span>⚠️ Warning: The preferred editor/application ({prioritizedQueue[selectedTaskIndex]?.preferred_app || tasks[0]?.preferred_app || "VS Code"}) is not detected on your system.</span>
+                          <span className="text-[8.5px] font-normal opacity-80">Please install it to automatically open files.</span>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -1132,16 +1203,38 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
           )}
 
           {/* CODE SCAFFOLD PANEL */}
-          <div className={`p-5 rounded-xl border flex flex-col justify-between h-[580px] transition-all duration-300 ${
+          <div className={`p-5 rounded-xl border flex flex-col justify-between h-[500px] lg:h-[580px] transition-all duration-300 ${
             isLight ? "bg-white border-[#b0b7b5] shadow-sm" : "bg-[#06141B]/40 border border-cork-shadow/60 backdrop-blur-xl"
           }`}>
             <div className="min-h-0 flex-1 flex flex-col overflow-y-auto pr-1">
-              <div className="flex justify-between items-center pb-2 border-b border-cork-shadow/20 mb-3 shrink-0">
-                <h2 className="text-[11px] font-mono uppercase tracking-wider text-grey-brown font-bold flex items-center gap-1.5">
+              <div className="flex justify-between items-center pb-2 border-b border-cork-shadow/20 mb-3 shrink-0 gap-2">
+                <h2 className="text-[11px] font-mono uppercase tracking-wider text-grey-brown font-bold flex items-center gap-1.5 shrink-0">
                   <Code size={13} className="text-burnt-sienna" /> AI Code Scaffold
                 </h2>
+                <div className="flex items-center gap-1 min-w-0">
+                  <span className="text-[8px] font-mono text-grey-brown uppercase font-bold shrink-0">Editor:</span>
+                  <select
+                    id="active-editor-select"
+                    value={activeEditor}
+                    onChange={(e) => handleSwitchActiveEditor(e.target.value)}
+                    className={`rounded px-1.5 py-0.5 text-[9px] font-mono focus:outline-none max-w-[120px] truncate ${
+                      isLight 
+                        ? "bg-[#f5f6f6] border border-[#b0b7b5] text-[#06141B]" 
+                        : "bg-black/40 border border-white/10 text-warm-cream"
+                    }`}
+                  >
+                    <option value="VS Code" className="bg-[#06141B] text-warm-cream">VS Code</option>
+                    <option value="Cursor" className="bg-[#06141B] text-warm-cream">Cursor</option>
+                    <option value="Zed Editor" className="bg-[#06141B] text-warm-cream">Zed Editor</option>
+                    <option value="Notepad" className="bg-[#06141B] text-warm-cream">Notepad</option>
+                    <option value="MS Word" className="bg-[#06141B] text-warm-cream">MS Word</option>
+                    <option value="MS PowerPoint" className="bg-[#06141B] text-warm-cream">MS PowerPoint</option>
+                    <option value="MS Excel" className="bg-[#06141B] text-warm-cream">MS Excel</option>
+                    <option value="Terminal Only" className="bg-[#06141B] text-warm-cream">Terminal</option>
+                  </select>
+                </div>
                 {scaffold?.file_path && (
-                  <span className="text-[9px] font-mono text-grey-brown bg-grey-brown/5 px-2 py-0.5 rounded border border-cork-shadow/10 truncate max-w-[180px]">
+                  <span className="text-[9px] font-mono text-grey-brown bg-grey-brown/5 px-2 py-0.5 rounded border border-cork-shadow/10 truncate max-w-[120px] shrink-0">
                     📄 {scaffold.file_path.split("/").pop()}
                   </span>
                 )}

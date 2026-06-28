@@ -28,7 +28,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isAppLaunched, setIsAppLaunched] = useState(false);
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
   const [emailInput, setEmailInput] = useState("");
   const [isWaitlisted, setIsWaitlisted] = useState(false);
 
@@ -248,24 +248,7 @@ export default function App() {
                   <ChevronDown className="w-4 h-4 text-burnt-sienna animate-bounce" />
                 </div>
 
-                {/* Product Video Thumbnail / play chip */}
-                <button
-                  id="play-video-chip"
-                  onClick={() => setIsVideoOpen(true)}
-                  className="absolute bottom-0 right-6 md:right-12 flex items-center gap-2.5 p-2 pr-4 bg-dark-cork/40 hover:bg-[#11212D]/90 border border-warm-cream/10 hover:border-burnt-sienna rounded-xl transition-all duration-300 cursor-pointer shadow-xl max-w-xs group"
-                >
-                  <div className="w-10 h-10 bg-burnt-sienna/10 rounded-lg flex items-center justify-center text-burnt-sienna group-hover:bg-burnt-sienna group-hover:text-warm-cream transition-all duration-300">
-                    <Play className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <span className="font-mono text-[8px] tracking-widest text-burnt-sienna uppercase font-bold">
-                      PLAY INTRO
-                    </span>
-                    <span className="font-sans text-[11px] text-warm-cream/90 font-medium">
-                      See Catalyst in Action
-                    </span>
-                  </div>
-                </button>
+
               </div>
             </section>
 
@@ -568,73 +551,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* VIDEO MODAL / OVERLAY */}
-      <AnimatePresence>
-        {isVideoOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-studio-black/95 backdrop-blur-md z-50 flex items-center justify-center p-6"
-          >
-            <div className="relative w-full max-w-3xl bg-studio-black border border-cork-shadow rounded-2xl overflow-hidden p-6 flex flex-col gap-4 shadow-2xl">
-              
-              {/* Close Button */}
-              <button
-                id="close-video-btn"
-                onClick={() => setIsVideoOpen(false)}
-                className="absolute top-4 right-4 p-2 text-grey-brown hover:text-burnt-sienna transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
 
-              <div className="flex items-center gap-2 pb-2 border-b border-cork-shadow/40">
-                <Flame className="text-burnt-sienna w-5 h-5 animate-pulse" />
-                <span className="font-sans font-semibold text-body text-warm-cream">
-                  Catalyst: Cinematic Product Introduction
-                </span>
-              </div>
-
-              {/* Simulated cinematic presentation of features */}
-              <div className="w-full aspect-video rounded-xl bg-dark-cork/20 border border-cork-shadow/60 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden group">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--color-burnt-sienna)_0%,_transparent_60%)] opacity-10 pointer-events-none" />
-                
-                {/* Floating graphic elements */}
-                <div className="w-20 h-20 rounded-full border border-burnt-sienna/30 flex items-center justify-center bg-burnt-sienna/5 mb-4 group-hover:scale-105 transition-transform duration-500">
-                  <Play className="w-8 h-8 text-burnt-sienna fill-burnt-sienna" />
-                </div>
-
-                <div className="flex flex-col gap-2 max-w-sm z-10">
-                  <h4 className="font-sans font-medium text-subheading text-warm-cream">
-                    "From Blank Page to Completed Sprints"
-                  </h4>
-                  <p className="font-mono text-caption text-grey-brown">
-                    A visual tour of the Catalyst physical clock widget syncing in real-time with VS Code, Figma, and Notion workspaces.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center pt-2">
-                <span className="font-mono text-[9px] text-grey-brown uppercase tracking-widest">
-                  Duration: 1:45 • High Definition Spatial Audio
-                </span>
-
-                <button
-                  id="modal-launch-btn"
-                  onClick={() => {
-                    setIsVideoOpen(false);
-                    handleLaunchApp();
-                  }}
-                  className="px-4 py-2 bg-warm-cream hover:bg-burnt-sienna text-studio-black hover:text-warm-cream font-mono text-[10px] tracking-widest uppercase rounded-full transition-all duration-300 cursor-pointer"
-                >
-                  Skip and Launch App
-                </button>
-              </div>
-
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
     </div>
   );

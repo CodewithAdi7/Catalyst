@@ -60,6 +60,7 @@ class SprintService:
             micro_task=first_task,
             sprint_context=request.monolithic_task,
             task_type=request.task_type,
+            preferred_app=request.preferred_app,
         )
         deadline_assessments = await self.assess_calendar_deadlines(
             CalendarDeadlineRequest(
@@ -71,11 +72,20 @@ class SprintService:
             )
         )
 
+        app_installed = True
+        if request.preferred_app:
+            app_key = self._normalize_app_name(request.preferred_app)
+            if app_key not in {"default", "terminalonly"}:
+                executable = self._resolve_app_executable(app_key)
+                if not executable:
+                    app_installed = False
+
         return SprintInitializationResponse(
             sprint_id=str(uuid4()),
             timeline=timeline,
             first_step_scaffold=first_step_scaffold,
             deadline_assessments=deadline_assessments,
+            app_installed=app_installed,
         )
 
     async def next_step_scaffold(self, request: NextStepRequest) -> CodeScaffold:
@@ -88,6 +98,7 @@ class SprintService:
             ),
             sprint_context=f"Sprint {request.sprint_id}; completed task {request.completed_task_id}",
             task_type=request.task_type,
+            preferred_app=request.preferred_app,
         )
 
     async def prioritize_tasks(
@@ -163,13 +174,45 @@ class SprintService:
         micro_task: MicroTask,
         sprint_context: str,
         task_type: TaskType = TaskType.coding,
+        preferred_app: str | None = None,
     ) -> CodeScaffold:
         if not self.gemini.is_configured:
             return self._fallback_scaffold(tech_stack, micro_task, task_type)
 
+        app_normalized = self._normalize_app_name(preferred_app or "")
+        
+        # Inject custom prompts for Microsoft Office and Notepad apps
+        app_directive = ""
+        if "word" in app_normalized:
+            app_directive = (
+                "The preferred app is MS Word. In your boilerplate_code, suggest document/article structures, "
+                "ideas, lists, or introductory paragraphs for this document/article in a professional drafting template format."
+            )
+        elif "notepad" in app_normalized:
+            app_directive = (
+                "The preferred app is Notepad. In your boilerplate_code, provide clean text-based drafting outlines, "
+                "ideas, lists, or simple notes suited to plain text format."
+            )
+        elif "powerpoint" in app_normalized:
+            app_directive = (
+                "The preferred app is MS PowerPoint. In your boilerplate_code, prepare a structured slide outline "
+                "compatible with Word/RTF slide deck import. Slide titles MUST be Heading 1s, and slide content/bullets "
+                "MUST be indented bullets under them. Make sure the first slide is an intro slide containing name, "
+                "company, template placeholder, and title."
+            )
+        elif "excel" in app_normalized:
+            app_directive = (
+                "The preferred app is MS Excel. In your boilerplate_code, provide a complete, well-formed CSV structure "
+                "with columns, rows, sample calculations/metrics, and mathematical formulas (e.g. SUM, AVERAGE) if applicable."
+            )
+
+        system_prompt = SCAFFOLDING_PROMPT_CONSTRAINT
+        if app_directive:
+            system_prompt += f"\nSPECIAL DIRECTION: {app_directive}"
+
         try:
             return await self.gemini.generate_structured(
-                system_prompt=SCAFFOLDING_PROMPT_CONSTRAINT,
+                system_prompt=system_prompt,
                 user_prompt=(
                     f"Task type: {task_type}\n"
                     f"Sprint context: {sprint_context}\n"
@@ -225,10 +268,17 @@ class SprintService:
         target_path.parent.mkdir(parents=True, exist_ok=True)
         content = request.scaffold.boilerplate_code
 
-        app = (request.preferred_app or "").lower()
-        if request.task_type == TaskType.writing and "word" in app:
+        app_normalized = self._normalize_app_name(request.preferred_app or "")
+        if "word" in app_normalized:
             target_path = target_path.with_suffix(".rtf")
             content = self._plain_text_to_rtf(content)
+        elif "notepad" in app_normalized:
+            target_path = target_path.with_suffix(".txt")
+        elif "powerpoint" in app_normalized:
+            target_path = target_path.with_suffix(".rtf")
+            content = self._plain_text_to_rtf(content)
+        elif "excel" in app_normalized:
+            target_path = target_path.with_suffix(".csv")
         elif request.task_type == TaskType.writing and target_path.suffix.lower() not in {".md", ".txt", ".rtf"}:
             target_path = target_path.with_suffix(".md")
 
@@ -246,6 +296,14 @@ class SprintService:
         launch_command = self._launch_command(request, workspace, target_path)
         opened = False
         
+        # Check if the app is installed/found
+        app_installed = True
+        app_key = self._normalize_app_name(request.preferred_app or "default")
+        if app_key not in {"default", "terminalonly"}:
+            executable = self._resolve_app_executable(app_key)
+            if not executable:
+                app_installed = False
+
         # Construct the message with setup status, guidance, and design inspiration
         message_parts = [f"✅ Project ready!"]
         
@@ -269,6 +327,7 @@ class SprintService:
             launch_command=launch_command,
             opened=opened,
             message=message,
+            app_installed=app_installed,
         )
 
     def check_task_status(self, request: TaskStatusRequest) -> TaskStatusResponse:
@@ -599,7 +658,7 @@ class SprintService:
 
     @staticmethod
     def _launch_command(request: MaterializeScaffoldRequest, workspace: Path, target_path: Path) -> str:
-        app = (request.preferred_app or "default").lower()
+        app = SprintService._normalize_app_name(request.preferred_app or "default")
         target = workspace if app in {"vscode", "cursor", "pycharm"} else target_path
         executable = SprintService._resolve_app_executable(app)
         if executable:
@@ -609,7 +668,7 @@ class SprintService:
         return f'{app} "{target}"'
 
     def _try_open_app(self, request: MaterializeScaffoldRequest, workspace: Path, target_path: Path) -> bool:
-        app = (request.preferred_app or "default").lower()
+        app = self._normalize_app_name(request.preferred_app or "default")
         target = workspace if app in {"vscode", "cursor", "pycharm"} else target_path
 
         try:
@@ -621,8 +680,15 @@ class SprintService:
                 subprocess.Popen([str(executable), str(target)], shell=False)
                 return True
 
-            if app == "word" and os.name == "nt":
-                subprocess.Popen(["cmd", "/c", "start", "", "winword", str(target_path)], shell=False)
+            if app in {"word", "notepad", "powerpoint", "excel"} and os.name == "nt":
+                cmd_names = {
+                    "word": "winword",
+                    "notepad": "notepad",
+                    "powerpoint": "powerpnt",
+                    "excel": "excel"
+                }
+                cmd = cmd_names.get(app, app)
+                subprocess.Popen(["cmd", "/c", "start", "", cmd, str(target_path)], shell=False)
                 return True
 
             logger.warning("No launcher found for preferred app: %s", app)
@@ -640,6 +706,23 @@ class SprintService:
         return True
 
     @staticmethod
+    def _normalize_app_name(app: str) -> str:
+        app = app.lower()
+        if "word" in app:
+            return "word"
+        if "powerpoint" in app or "powerpnt" in app:
+            return "powerpoint"
+        if "excel" in app:
+            return "excel"
+        if "vscode" in app or "vs code" in app:
+            return "vscode"
+        if "cursor" in app:
+            return "cursor"
+        if "notepad" in app:
+            return "notepad"
+        return app.replace(" ", "").replace("-", "")
+
+    @staticmethod
     def _resolve_app_executable(app: str) -> Path | str | None:
         command_names = {
             "vscode": ["code", "code.cmd"],
@@ -647,6 +730,8 @@ class SprintService:
             "pycharm": ["pycharm64", "pycharm64.exe", "pycharm"],
             "word": ["winword", "winword.exe"],
             "notepad": ["notepad", "notepad.exe"],
+            "powerpoint": ["powerpnt", "powerpnt.exe"],
+            "excel": ["excel", "excel.exe"],
         }
         for command in command_names.get(app, []):
             found = shutil.which(command)
@@ -678,6 +763,12 @@ class SprintService:
                 *[root / "Microsoft Office" / "root" / "Office16" / "WINWORD.EXE" for root in program_files],
             ],
             "notepad": [Path(os.environ.get("WINDIR", "C:\\Windows")) / "System32" / "notepad.exe"],
+            "powerpoint": [
+                *[root / "Microsoft Office" / "root" / "Office16" / "POWERPNT.EXE" for root in program_files],
+            ],
+            "excel": [
+                *[root / "Microsoft Office" / "root" / "Office16" / "EXCEL.EXE" for root in program_files],
+            ],
         }
         for candidate in candidates.get(app, []):
             if candidate and candidate.exists():

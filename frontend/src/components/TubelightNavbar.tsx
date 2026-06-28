@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Sparkles } from "lucide-react";
 import ThemeToggler from "./ThemeToggler";
 
@@ -33,6 +33,8 @@ export default function TubelightNavbar({
   ];
 
   const [activeTab, setActiveTab] = useState("intro");
+  const [isOpen, setIsOpen] = useState(false);
+  const isLight = theme === "light";
 
   // Track active section on scroll
   useEffect(() => {
@@ -140,17 +142,45 @@ export default function TubelightNavbar({
         </div>
       )}
 
-      {/* Right: Theme Toggle, Sign In, Launch App */}
+      {/* Right: Theme Toggle, Hamburger, Sign In, Launch App */}
       <div className="flex items-center gap-4">
         {/* Animated Theme Toggler */}
         <ThemeToggler theme={theme} onToggle={onToggleTheme} />
+
+        {/* Hamburger Menu Toggle (Mobile Only) */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-[5px] bg-dark-cork/30 border border-warm-cream/10 rounded-full hover:border-burnt-sienna/50 cursor-pointer focus:outline-none transition-colors duration-300"
+        >
+          <motion.span
+            animate={isOpen ? { rotate: 45, y: 6.5 } : { rotate: 0, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className={`block w-4 h-[1.5px] transition-colors duration-300 ${
+              isLight ? "bg-[#06141B]" : "bg-warm-cream"
+            }`}
+          />
+          <motion.span
+            animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            className={`block w-4 h-[1.5px] transition-colors duration-300 ${
+              isLight ? "bg-[#06141B]" : "bg-warm-cream"
+            }`}
+          />
+          <motion.span
+            animate={isOpen ? { rotate: -45, y: -6.5 } : { rotate: 0, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className={`block w-4 h-[1.5px] transition-colors duration-300 ${
+              isLight ? "bg-[#06141B]" : "bg-warm-cream"
+            }`}
+          />
+        </button>
 
         {/* Sign In (Ghost Pill Button) */}
         {!isAppLaunched && (
           <button
             id="signin-btn"
             onClick={onSignIn}
-            className="hidden sm:inline-block px-4 py-2 text-[12px] font-medium tracking-wider text-warm-cream dark:text-warm-cream light:text-studio-black hover:text-burnt-sienna border border-transparent hover:border-warm-cream/20 rounded-full transition-all duration-300 cursor-pointer"
+            className="hidden md:inline-block px-4 py-2 text-[12px] font-medium tracking-wider text-warm-cream dark:text-warm-cream light:text-studio-black hover:text-burnt-sienna border border-transparent hover:border-warm-cream/20 rounded-full transition-all duration-300 cursor-pointer"
           >
             SIGN IN
           </button>
@@ -161,7 +191,7 @@ export default function TubelightNavbar({
           <button
             id="back-landing-btn"
             onClick={onBackToLanding}
-            className="px-5 py-2.5 text-[11px] font-semibold tracking-wider text-warm-cream bg-dark-cork border border-warm-cream/20 hover:border-burnt-sienna rounded-[36px] transition-all duration-300 cursor-pointer shadow-lg"
+            className="hidden md:inline-block px-5 py-2.5 text-[11px] font-semibold tracking-wider text-warm-cream bg-dark-cork border border-warm-cream/20 hover:border-burnt-sienna rounded-[36px] transition-all duration-300 cursor-pointer shadow-lg"
           >
             BACK TO INFO
           </button>
@@ -169,12 +199,99 @@ export default function TubelightNavbar({
           <button
             id="launch-app-btn"
             onClick={onLaunchApp}
-            className="px-5 py-2.5 text-[11px] font-semibold tracking-wider text-studio-black bg-warm-cream hover:bg-burnt-sienna hover:text-warm-cream rounded-[36px] transition-all duration-300 cursor-pointer shadow-lg hover:shadow-burnt-sienna/20"
+            className="hidden md:inline-block px-5 py-2.5 text-[11px] font-semibold tracking-wider text-studio-black bg-warm-cream hover:bg-burnt-sienna hover:text-warm-cream rounded-[36px] transition-all duration-300 cursor-pointer shadow-lg hover:shadow-burnt-sienna/20"
           >
             LAUNCH APP
           </button>
         )}
       </div>
+
+      {/* Mobile Drawer Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className={`md:hidden absolute top-20 left-0 right-0 p-5 rounded-3xl border shadow-2xl flex flex-col gap-4 z-40 transition-colors duration-300 ${
+              isLight 
+                ? "bg-white border-[#b0b7b5] text-[#06141B]" 
+                : "bg-studio-black/95 border-white/10 backdrop-blur-xl text-warm-cream"
+            }`}
+          >
+            {/* Nav Items */}
+            {!isAppLaunched ? (
+              <div className="flex flex-col gap-2">
+                {items.map((item) => {
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleNavClick(item.id);
+                      }}
+                      className={`w-full py-2.5 font-mono text-[11px] tracking-wider rounded-xl transition-all duration-200 cursor-pointer ${
+                        isActive
+                          ? "bg-burnt-sienna/10 text-burnt-sienna font-bold"
+                          : "text-grey-brown hover:text-warm-cream hover:bg-white/5"
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2 py-2 bg-burnt-sienna/10 border border-burnt-sienna/20 rounded-xl">
+                <span className="w-1.5 h-1.5 bg-burnt-sienna rounded-full animate-pulse" />
+                <span className="font-mono text-[10px] text-burnt-sienna font-medium tracking-widest">
+                  WORKSPACE ACTIVE
+                </span>
+              </div>
+            )}
+
+            <div className="h-[1px] bg-cork-shadow/20 border-dashed border-t" />
+
+            {/* Buttons */}
+            <div className="flex flex-col gap-2">
+              {!isAppLaunched && (
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    onSignIn();
+                  }}
+                  className="w-full py-2.5 text-[11px] font-semibold tracking-wider text-center border border-warm-cream/20 rounded-full hover:bg-white/5 transition-all cursor-pointer font-mono"
+                >
+                  SIGN IN
+                </button>
+              )}
+              {isAppLaunched ? (
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    onBackToLanding();
+                  }}
+                  className="w-full py-2.5 text-[11px] font-semibold tracking-wider text-center text-warm-cream bg-[#11212D] border border-warm-cream/20 rounded-full transition-all cursor-pointer font-mono"
+                >
+                  BACK TO INFO
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    onLaunchApp();
+                  }}
+                  className="w-full py-2.5 text-[11px] font-semibold tracking-wider text-center text-studio-black bg-warm-cream hover:bg-burnt-sienna hover:text-warm-cream rounded-full transition-all cursor-pointer font-mono"
+                >
+                  LAUNCH APP
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

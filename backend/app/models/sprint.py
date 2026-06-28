@@ -71,6 +71,7 @@ class SprintInitializationResponse(BaseModel):
     timeline: list[MicroTask]
     first_step_scaffold: CodeScaffold
     deadline_assessments: list[DeadlineAssessment] = Field(default_factory=list)
+    app_installed: bool = True
 
 
 class NextStepRequest(BaseModel):
@@ -80,6 +81,7 @@ class NextStepRequest(BaseModel):
     tech_stack: list[str]
     next_task_description: str
     task_type: TaskType = TaskType.coding
+    preferred_app: str | None = None
 
 
 class CalendarDeadlineRequest(BaseModel):
@@ -139,6 +141,7 @@ class MaterializeScaffoldResponse(BaseModel):
     launch_command: str | None = None
     opened: bool = False
     message: str
+    app_installed: bool = True
 
 
 class TaskStatusRequest(BaseModel):

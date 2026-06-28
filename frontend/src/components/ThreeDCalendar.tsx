@@ -238,7 +238,7 @@ export default function ThreeDCalendar({ theme = "dark" }: { theme?: string }) {
         </motion.div>
       </motion.div>
       <p className="font-mono text-[10px] text-grey-brown/60 mt-4 tracking-widest uppercase">
-        ▲ Cursor Interactive 3D Cork Object
+        ▲ Interact and Play with the calendar
       </p>
     </div>
   );
