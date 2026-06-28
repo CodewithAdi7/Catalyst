@@ -38,7 +38,7 @@ export default function GooeyBackground() {
           }}
           className="absolute w-96 h-96 rounded-full mix-blend-screen"
           style={{
-            background: "radial-gradient(circle, #382416 0%, transparent 70%)",
+            background: "radial-gradient(circle, #11212D 0%, transparent 70%)",
             top: "15%",
             left: "15%",
           }}
@@ -58,7 +58,7 @@ export default function GooeyBackground() {
           }}
           className="absolute w-80 h-80 rounded-full mix-blend-screen"
           style={{
-            background: "radial-gradient(circle, #dc5000 0%, transparent 70%)",
+            background: "radial-gradient(circle, #9BA8AB 0%, transparent 70%)",
             opacity: 0.3,
             top: "40%",
             left: "50%",
@@ -79,7 +79,7 @@ export default function GooeyBackground() {
           }}
           className="absolute w-[500px] h-[500px] rounded-full"
           style={{
-            background: "radial-gradient(circle, #40372e 0%, transparent 75%)",
+            background: "radial-gradient(circle, #253745 0%, transparent 75%)",
             opacity: 0.1,
             top: "30%",
             left: "25%",

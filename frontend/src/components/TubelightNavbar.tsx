@@ -123,7 +123,7 @@ export default function TubelightNavbar({
                     className="absolute inset-0 bg-warm-cream/5 rounded-full border border-warm-cream/10 flex items-end justify-center"
                   >
                     {/* Glowing tubelight line at the bottom */}
-                    <div className="w-6 h-[2px] bg-burnt-sienna rounded-full shadow-[0_0_8px_#dc5000]" />
+                    <div className="w-6 h-[2px] bg-burnt-sienna rounded-full shadow-[0_0_8px_#9BA8AB]" />
                   </motion.div>
                 )}
                 <span className="relative z-10">{item.name}</span>

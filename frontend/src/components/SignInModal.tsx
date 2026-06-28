@@ -94,22 +94,22 @@ const DotMap = ({ theme }: { theme: "dark" | "light" }) => {
       {
         start: { x: dimensions.width * 0.18, y: dimensions.height * 0.25, delay: 0 },
         end: { x: dimensions.width * 0.42, y: dimensions.height * 0.18, delay: 1.8 },
-        color: "#dc5000",
+        color: "#9BA8AB",
       },
       {
         start: { x: dimensions.width * 0.42, y: dimensions.height * 0.18, delay: 1.8 },
         end: { x: dimensions.width * 0.62, y: dimensions.height * 0.32, delay: 3.5 },
-        color: "#dc5000",
+        color: "#9BA8AB",
       },
       {
         start: { x: dimensions.width * 0.12, y: dimensions.height * 0.6, delay: 0.8 },
         end: { x: dimensions.width * 0.44, y: dimensions.height * 0.48, delay: 2.8 },
-        color: "#dc5000",
+        color: "#9BA8AB",
       },
       {
         start: { x: dimensions.width * 0.72, y: dimensions.height * 0.22, delay: 0.3 },
         end: { x: dimensions.width * 0.52, y: dimensions.height * 0.52, delay: 2.2 },
-        color: "#dc5000",
+        color: "#9BA8AB",
       },
     ];
 
@@ -119,7 +119,7 @@ const DotMap = ({ theme }: { theme: "dark" | "light" }) => {
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
         // Fill dots using Burnt Sienna with random opacity
-        ctx.fillStyle = `rgba(220, 80, 0, ${dot.opacity * (isLight ? 0.75 : 1.0)})`;
+        ctx.fillStyle = `rgba(155, 168, 171, ${dot.opacity * (isLight ? 0.75 : 1.0)})`;
         ctx.fill();
       });
     }
@@ -141,7 +141,7 @@ const DotMap = ({ theme }: { theme: "dark" | "light" }) => {
         ctx.beginPath();
         ctx.moveTo(route.start.x, route.start.y);
         ctx.lineTo(x, y);
-        ctx.strokeStyle = `rgba(220, 80, 0, ${isLight ? 0.45 : 0.75})`;
+        ctx.strokeStyle = `rgba(155, 168, 171, ${isLight ? 0.45 : 0.75})`;
         ctx.lineWidth = 1.2;
         ctx.stroke();
         
@@ -154,13 +154,13 @@ const DotMap = ({ theme }: { theme: "dark" | "light" }) => {
         // Draw moving point
         ctx.beginPath();
         ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = isLight ? "#100904" : "#ffedd7";
+        ctx.fillStyle = isLight ? "#06141B" : "#CCD0CF";
         ctx.fill();
         
         // Pulsing glow
         ctx.beginPath();
         ctx.arc(x, y, 5, 0, Math.PI * 2);
-        ctx.fillStyle = isLight ? "rgba(16, 9, 4, 0.25)" : "rgba(255, 237, 215, 0.35)";
+        ctx.fillStyle = isLight ? "rgba(6, 20, 27, 0.25)" : "rgba(204, 208, 207, 0.35)";
         ctx.fill();
         
         if (progress === 1) {
@@ -202,6 +202,247 @@ export default function SignInModal({ isOpen, onClose, onSuccess, theme = "dark"
   const [isHovered, setIsHovered] = useState(false);
   const isLight = theme === "light";
 
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === "GOOGLE_SIGNIN_SUCCESS") {
+        onSuccess();
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [onSuccess]);
+
+  const handleGoogleSignIn = () => {
+    const width = 500;
+    const height = 620;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+    
+    const popup = window.open(
+      "",
+      "GoogleSignIn",
+      `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes`
+    );
+    
+    if (popup) {
+      popup.document.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Sign in - Google Accounts</title>
+          <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+          <style>
+            body {
+              font-family: 'Roboto', sans-serif;
+              background-color: #f0f4f9;
+              margin: 0;
+              padding: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+              color: #1f1f1f;
+              user-select: none;
+            }
+            .card {
+              background: #ffffff;
+              border-radius: 28px;
+              padding: 40px;
+              width: 100%;
+              max-width: 400px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+              box-sizing: border-box;
+              text-align: center;
+            }
+            .logo {
+              margin-bottom: 16px;
+            }
+            h1 {
+              font-size: 24px;
+              font-weight: 400;
+              margin: 0 0 8px 0;
+              color: #1f1f1f;
+            }
+            .subtitle {
+              font-size: 16px;
+              color: #444746;
+              margin-bottom: 24px;
+            }
+            .account-list {
+              border: 1px solid #c4c7c5;
+              border-radius: 12px;
+              overflow: hidden;
+              margin-bottom: 20px;
+              text-align: left;
+            }
+            .account-item {
+              display: flex;
+              align-items: center;
+              padding: 16px;
+              border-bottom: 1px solid #c4c7c5;
+              cursor: pointer;
+              transition: background 0.2s;
+            }
+            .account-item:last-child {
+              border-bottom: none;
+            }
+            .account-item:hover {
+              background-color: #f8fafd;
+            }
+            .avatar {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              background: #0b57d0;
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: 500;
+              font-size: 18px;
+              margin-right: 12px;
+            }
+            .details {
+              display: flex;
+              flex-direction: column;
+            }
+            .name {
+              font-size: 14px;
+              font-weight: 500;
+              color: #1f1f1f;
+            }
+            .email {
+              font-size: 12px;
+              color: #444746;
+            }
+            .use-another {
+              display: flex;
+              align-items: center;
+              padding: 16px;
+              cursor: pointer;
+              color: #0b57d0;
+              font-size: 14px;
+              font-weight: 500;
+              transition: background 0.2s;
+            }
+            .use-another:hover {
+              background-color: #f8fafd;
+            }
+            .use-another-icon {
+              margin-right: 12px;
+              width: 24px;
+              display: flex;
+              justify-content: center;
+            }
+            .footer {
+              font-size: 11px;
+              color: #444746;
+              line-height: 1.5;
+              text-align: left;
+              margin-top: 24px;
+            }
+            .bottom-links {
+              display: flex;
+              justify-content: space-between;
+              width: 100%;
+              max-width: 400px;
+              margin-top: 16px;
+              font-size: 12px;
+              color: #444746;
+              padding: 0 8px;
+              box-sizing: border-box;
+            }
+            .bottom-links a {
+              color: #444746;
+              text-decoration: none;
+              margin-left: 8px;
+            }
+            .bottom-links a:hover {
+              text-decoration: underline;
+            }
+            .card {
+              animation: fadeIn 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+            @keyframes fadeIn {
+              from { opacity: 0; transform: scale(0.96) translateY(8px); }
+              to { opacity: 1; transform: scale(1) translateY(0); }
+            }
+          </style>
+        </head>
+        <body>
+          <div style="display: flex; flex-direction: column; align-items: center; width: 100%; padding: 16px; box-sizing: border-box;">
+            <div class="card">
+              <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+              </div>
+              <h1>Choose an account</h1>
+              <div class="subtitle">to continue to Catalyst</div>
+
+              <div class="account-list">
+                <div class="account-item" onclick="selectAccount('Aditya', 'aditya@gmail.com')">
+                  <div class="avatar" style="background-color: #0f9d58;">A</div>
+                  <div class="details">
+                    <span class="name">Aditya</span>
+                    <span class="email">aditya@gmail.com</span>
+                  </div>
+                </div>
+                <div class="account-item" onclick="selectAccount('Catalyst Guest', 'guest@catalyst.ai')">
+                  <div class="avatar" style="background-color: #1a73e8;">C</div>
+                  <div class="details">
+                    <span class="name">Catalyst Guest</span>
+                    <span class="email">guest@catalyst.ai</span>
+                  </div>
+                </div>
+                <div class="use-another" onclick="selectAccount('New User', 'user@gmail.com')">
+                  <div class="use-another-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <line x1="19" y1="8" x2="19" y2="14"/>
+                      <line x1="16" y1="11" x2="22" y2="11"/>
+                    </svg>
+                  </div>
+                  <span>Use another account</span>
+                </div>
+              </div>
+
+              <div class="footer">
+                To continue, Google will share your name, email address, language preference, and profile picture with Catalyst. Before using this app, you can review its privacy policy and terms of service.
+              </div>
+            </div>
+
+            <div class="bottom-links">
+              <span>English (United States)</span>
+              <div>
+                <a href="#">Help</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            function selectAccount(name, email) {
+              if (window.opener) {
+                window.opener.postMessage({ type: 'GOOGLE_SIGNIN_SUCCESS', name: name, email: email }, '*');
+              }
+              window.close();
+            }
+          </script>
+        </body>
+        </html>
+      `);
+      popup.document.close();
+    }
+  };
+
   if (!isOpen) return null;
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -217,7 +458,7 @@ export default function SignInModal({ isOpen, onClose, onSuccess, theme = "dark"
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className={`w-full max-w-4xl overflow-hidden rounded-2xl flex relative shadow-2xl ${
-          isLight ? "bg-white text-studio-black" : "bg-[#100904] text-warm-cream border border-cork-shadow/60"
+          isLight ? "bg-white text-studio-black" : "bg-[#06141B] text-warm-cream border border-cork-shadow/60"
         }`}
       >
         {/* Close trigger button */}
@@ -225,8 +466,8 @@ export default function SignInModal({ isOpen, onClose, onSuccess, theme = "dark"
           onClick={onClose}
           className={`absolute top-4 right-4 p-2 rounded-full border transition-all z-20 cursor-pointer ${
             isLight 
-              ? "bg-[#faf6f0] border-[#d2c2b0] hover:bg-white text-[#100904]" 
-              : "bg-[#100904] border-cork-shadow hover:bg-dark-cork text-[#ffedd7]"
+              ? "bg-[#f0f2f2] border-[#b0b7b5] hover:bg-white text-[#06141B]" 
+              : "bg-[#06141B] border-cork-shadow hover:bg-dark-cork text-[#CCD0CF]"
           }`}
         >
           <X size={15} />
@@ -234,7 +475,7 @@ export default function SignInModal({ isOpen, onClose, onSuccess, theme = "dark"
 
         {/* Left column - Animated World Map */}
         <div className={`hidden md:block w-1/2 h-[550px] relative overflow-hidden border-r ${
-          isLight ? "bg-gradient-to-br from-[#fffbf4] to-[#ffedd7] border-[#e5e5e5]" : "bg-gradient-to-br from-[#1c120c] to-[#100904] border-cork-shadow/40"
+          isLight ? "bg-gradient-to-br from-[#f5f6f6] to-[#CCD0CF] border-[#b0b7b5]" : "bg-gradient-to-br from-[#0c1922] to-[#06141B] border-cork-shadow/40"
         }`}>
           <DotMap theme={theme} />
           
@@ -281,10 +522,10 @@ export default function SignInModal({ isOpen, onClose, onSuccess, theme = "dark"
             <div className="mb-5">
               <button 
                 type="button"
-                onClick={onSuccess}
+                onClick={handleGoogleSignIn}
                 className={`w-full flex items-center justify-center gap-2 rounded-full p-2.5 text-xs font-mono font-bold tracking-wider uppercase border transition-all duration-300 shadow-sm cursor-pointer ${
                   isLight 
-                    ? "bg-[#faf6f0] border-[#d2c2b0] hover:bg-white text-[#100904]" 
+                    ? "bg-[#f0f2f2] border-[#b0b7b5] hover:bg-white text-[#06141B]" 
                     : "bg-white/5 border-white/10 hover:bg-white/10 text-warm-cream"
                 }`}
               >
@@ -316,7 +557,7 @@ export default function SignInModal({ isOpen, onClose, onSuccess, theme = "dark"
                 <div className={`w-full border-t ${isLight ? "border-black/10" : "border-white/5"}`} />
               </div>
               <span className={`relative px-3 text-[10px] font-mono tracking-widest uppercase ${
-                isLight ? "bg-white text-grey-brown" : "bg-[#100904] text-grey-brown"
+                isLight ? "bg-white text-grey-brown" : "bg-[#06141B] text-grey-brown"
               }`}>or email</span>
             </div>
             
@@ -334,7 +575,7 @@ export default function SignInModal({ isOpen, onClose, onSuccess, theme = "dark"
                   required
                   className={`w-full rounded p-2 text-xs focus:outline-none focus:border-burnt-sienna/60 transition-all ${
                     isLight 
-                      ? "bg-[#faf6f0] border border-[#d2c2b0] text-[#100904]" 
+                      ? "bg-[#f0f2f2] border border-[#b0b7b5] text-[#06141B]" 
                       : "bg-black/40 border border-cork-shadow/50 text-warm-cream"
                   }`}
                 />
@@ -354,7 +595,7 @@ export default function SignInModal({ isOpen, onClose, onSuccess, theme = "dark"
                     required
                     className={`w-full rounded p-2 text-xs focus:outline-none focus:border-burnt-sienna/60 pr-10 transition-all ${
                       isLight 
-                        ? "bg-[#faf6f0] border border-[#d2c2b0] text-[#100904]" 
+                        ? "bg-[#f0f2f2] border border-[#b0b7b5] text-[#06141B]" 
                         : "bg-black/40 border border-cork-shadow/50 text-warm-cream"
                     }`}
                   />

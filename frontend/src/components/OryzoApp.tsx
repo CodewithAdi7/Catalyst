@@ -107,9 +107,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
   const isLight = theme === "light";
 
   // Task Queue state
-  const [tasks, setTasks] = useState<TaskCandidate[]>(() => {
-    return SEED_TASKS.map((t, idx) => ({ ...t, id: `task-${idx}` }));
-  });
+  const [tasks, setTasks] = useState<TaskCandidate[]>([]);
 
   // Prioritized list
   const [prioritizedQueue, setPrioritizedQueue] = useState<PrioritizedTask[]>([]);
@@ -543,11 +541,11 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
   const currentRisk = getActiveRisk();
 
   return (
-    <div className={`pt-24 min-h-screen px-6 md:px-12 py-12 flex flex-col gap-8 transition-colors duration-500 ${isLight ? "bg-[#ffedd7] text-studio-black" : "bg-studio-black text-[#ffedd7]"}`}>
+    <div className={`pt-24 min-h-screen px-6 md:px-12 py-12 flex flex-col gap-8 transition-colors duration-500 ${isLight ? "bg-[#CCD0CF] text-studio-black" : "bg-studio-black text-[#CCD0CF]"}`}>
       
       {/* Dynamic Sub-header Banner */}
       <div className={`p-5 rounded-xl border flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 ${
-        isLight ? "bg-white border-[#e5e5e5] shadow-sm" : "bg-[#0c0805]/40 border border-cork-shadow/60 backdrop-blur-xl"
+        isLight ? "bg-white border-[#b0b7b5] shadow-sm" : "bg-[#06141B]/40 border border-cork-shadow/60 backdrop-blur-xl"
       }`}>
         <div className="flex items-center gap-3">
           <div className="w-3.5 h-3.5 bg-burnt-sienna rounded-full shadow-[0_0_8px_rgba(220,80,0,0.6)] animate-pulse" />
@@ -573,7 +571,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
               showLogs
                 ? "bg-burnt-sienna/20 border-burnt-sienna/50 text-burnt-sienna"
                 : isLight
-                ? "bg-[#faf6f0] border-[#d2c2b0] hover:bg-white text-studio-black"
+                ? "bg-[#f0f2f2] border-[#b0b7b5] hover:bg-white text-studio-black"
                 : "bg-white/5 border-white/10 hover:bg-white/10 text-warm-cream"
             }`}
           >
@@ -590,7 +588,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
           
           {/* TASK INTAKE FORM */}
           <div className={`p-5 rounded-xl border flex flex-col gap-4 transition-all duration-300 ${
-            isLight ? "bg-white border-[#e5e5e5] shadow-sm" : "bg-[#0c0805]/40 border border-cork-shadow/60 backdrop-blur-xl"
+            isLight ? "bg-white border-[#b0b7b5] shadow-sm" : "bg-[#06141B]/40 border border-cork-shadow/60 backdrop-blur-xl"
           }`}>
             <div className="flex justify-between items-center pb-2 border-b border-cork-shadow/20">
               <h2 className="text-[11px] font-mono uppercase tracking-wider text-grey-brown font-bold flex items-center gap-1.5">
@@ -611,7 +609,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                   onChange={(e) => setNewTaskTitle(e.target.value)}
                   className={`w-full rounded p-2 text-xs transition-all placeholder:text-grey-brown/50 focus:outline-none ${
                     isLight 
-                      ? "bg-[#fcf8f2] border border-[#d2c2b0] text-[#100904] focus:border-burnt-sienna/60" 
+                      ? "bg-[#f5f6f6] border border-[#b0b7b5] text-[#06141B] focus:border-burnt-sienna/60" 
                       : "bg-black/40 border border-cork-shadow/50 text-warm-cream focus:border-burnt-sienna/60"
                   }`}
                 />
@@ -626,7 +624,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                   onChange={(e) => setNewTaskDesc(e.target.value)}
                   className={`w-full rounded p-2 text-xs transition-all resize-none h-14 placeholder:text-grey-brown/50 focus:outline-none ${
                     isLight 
-                      ? "bg-[#fcf8f2] border border-[#d2c2b0] text-[#100904] focus:border-burnt-sienna/60" 
+                      ? "bg-[#f5f6f6] border border-[#b0b7b5] text-[#06141B] focus:border-burnt-sienna/60" 
                       : "bg-black/40 border border-cork-shadow/50 text-warm-cream focus:border-burnt-sienna/60"
                   }`}
                 />
@@ -641,13 +639,13 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                     onChange={(e) => setNewTaskType(e.target.value as any)}
                     className={`w-full rounded p-2 text-xs focus:outline-none ${
                       isLight 
-                        ? "bg-[#fcf8f2] border border-[#d2c2b0] text-[#100904]" 
+                        ? "bg-[#f5f6f6] border border-[#b0b7b5] text-[#06141B]" 
                         : "bg-black/40 border border-cork-shadow/50 text-warm-cream"
                     }`}
                   >
-                    <option value="coding" className="bg-[#100904] text-warm-cream">Coding</option>
-                    <option value="writing" className="bg-[#100904] text-warm-cream">Writing</option>
-                    <option value="general" className="bg-[#100904] text-warm-cream">General</option>
+                    <option value="coding" className="bg-[#06141B] text-warm-cream">Coding</option>
+                    <option value="writing" className="bg-[#06141B] text-warm-cream">Writing</option>
+                    <option value="general" className="bg-[#06141B] text-warm-cream">General</option>
                   </select>
                 </div>
                 <div className="space-y-1">
@@ -661,7 +659,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                     onChange={(e) => setNewTaskHours(Number(e.target.value))}
                     className={`w-full rounded p-2 text-xs focus:outline-none ${
                       isLight 
-                        ? "bg-[#fcf8f2] border border-[#d2c2b0] text-[#100904]" 
+                        ? "bg-[#f5f6f6] border border-[#b0b7b5] text-[#06141B]" 
                         : "bg-black/40 border border-cork-shadow/50 text-warm-cream"
                     }`}
                   />
@@ -678,7 +676,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                   onChange={(e) => setNewTaskStack(e.target.value)}
                   className={`w-full rounded p-2 text-xs focus:outline-none ${
                     isLight 
-                      ? "bg-[#fcf8f2] border border-[#d2c2b0] text-[#100904]" 
+                      ? "bg-[#f5f6f6] border border-[#b0b7b5] text-[#06141B]" 
                       : "bg-black/40 border border-cork-shadow/50 text-warm-cream"
                   }`}
                 />
@@ -696,7 +694,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                     onChange={(e) => setNewTaskDeadline(e.target.value)}
                     className={`w-full rounded p-1.5 text-[10px] focus:outline-none [color-scheme:dark] ${
                       isLight 
-                        ? "bg-[#fcf8f2] border border-[#d2c2b0] text-[#100904]" 
+                        ? "bg-[#f5f6f6] border border-[#b0b7b5] text-[#06141B]" 
                         : "bg-black/40 border border-cork-shadow/50 text-warm-cream"
                     }`}
                   />
@@ -709,14 +707,14 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                     onChange={(e) => setNewTaskApp(e.target.value)}
                     className={`w-full rounded p-2 text-xs focus:outline-none ${
                       isLight 
-                        ? "bg-[#fcf8f2] border border-[#d2c2b0] text-[#100904]" 
+                        ? "bg-[#f5f6f6] border border-[#b0b7b5] text-[#06141B]" 
                         : "bg-black/40 border border-cork-shadow/50 text-warm-cream"
                     }`}
                   >
-                    <option value="VS Code" className="bg-[#100904] text-warm-cream">VS Code</option>
-                    <option value="Cursor" className="bg-[#100904] text-warm-cream">Cursor</option>
-                    <option value="Zed Editor" className="bg-[#100904] text-warm-cream">Zed Editor</option>
-                    <option value="Terminal Only" className="bg-[#100904] text-warm-cream">Terminal</option>
+                    <option value="VS Code" className="bg-[#06141B] text-warm-cream">VS Code</option>
+                    <option value="Cursor" className="bg-[#06141B] text-warm-cream">Cursor</option>
+                    <option value="Zed Editor" className="bg-[#06141B] text-warm-cream">Zed Editor</option>
+                    <option value="Terminal Only" className="bg-[#06141B] text-warm-cream">Terminal</option>
                   </select>
                 </div>
               </div>
@@ -734,7 +732,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
 
           {/* CALENDAR MANAGER */}
           <div className={`p-5 rounded-xl border flex flex-col gap-3 transition-all duration-300 ${
-            isLight ? "bg-white border-[#e5e5e5] shadow-sm" : "bg-[#0c0805]/40 border border-cork-shadow/60 backdrop-blur-xl"
+            isLight ? "bg-white border-[#b0b7b5] shadow-sm" : "bg-[#06141B]/40 border border-cork-shadow/60 backdrop-blur-xl"
           }`}>
             <div className="flex justify-between items-center pb-1 border-b border-cork-shadow/20">
               <h2 className="text-[11px] font-mono uppercase tracking-wider text-grey-brown font-bold flex items-center gap-1.5">
@@ -750,7 +748,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
 
             {showCalendarManager && (
               <form onSubmit={handleAddCalendarEvent} className={`p-2.5 rounded border space-y-2 mt-1 ${
-                isLight ? "bg-[#faf6f0] border-[#d2c2b0]" : "bg-black/30 border-white/5"
+                isLight ? "bg-[#f0f2f2] border-[#b0b7b5]" : "bg-black/30 border-white/5"
               }`}>
                 <div className="flex gap-2">
                   <input
@@ -760,7 +758,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                     value={newEventTitle}
                     onChange={(e) => setNewEventTitle(e.target.value)}
                     className={`flex-1 rounded p-1 text-[11px] focus:outline-none ${
-                      isLight ? "bg-white border border-[#d2c2b0] text-[#100904]" : "bg-black/60 border border-white/10 text-slate-200"
+                      isLight ? "bg-white border border-[#b0b7b5] text-[#06141B]" : "bg-black/60 border border-white/10 text-slate-200"
                     }`}
                   />
                   <input
@@ -769,7 +767,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                     value={newEventTime}
                     onChange={(e) => setNewEventTime(e.target.value)}
                     className={`w-14 rounded p-1 text-[11px] text-center font-mono focus:outline-none ${
-                      isLight ? "bg-white border border-[#d2c2b0] text-[#100904]" : "bg-black/60 border border-white/10 text-slate-200"
+                      isLight ? "bg-white border border-[#b0b7b5] text-[#06141B]" : "bg-black/60 border border-white/10 text-slate-200"
                     }`}
                   />
                 </div>
@@ -785,7 +783,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
             <div className="space-y-1.5 mt-1 max-h-36 overflow-y-auto pr-1">
               {calendarEvents.map((e) => (
                 <div key={e.id} className={`flex justify-between items-center text-xs p-1.5 px-2.5 rounded border transition-colors ${
-                  isLight ? "bg-[#faf6f0] border-[#e5e5e5]" : "bg-black/20 border-white/5"
+                  isLight ? "bg-[#f0f2f2] border-[#b0b7b5]" : "bg-black/20 border-white/5"
                 }`}>
                   <span className="font-sans font-medium text-grey-brown">{e.title}</span>
                   <div className="flex items-center gap-2 shrink-0">
@@ -808,14 +806,14 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
 
           {/* CALENDAR RISK ASSESSMENT */}
           <div className={`p-5 rounded-xl border flex flex-col gap-3 transition-all duration-300 ${
-            isLight ? "bg-white border-[#e5e5e5] shadow-sm" : "bg-[#0c0805]/40 border border-cork-shadow/60 backdrop-blur-xl"
+            isLight ? "bg-white border-[#b0b7b5] shadow-sm" : "bg-[#06141B]/40 border border-cork-shadow/60 backdrop-blur-xl"
           }`}>
             <h2 className="text-[11px] font-mono uppercase tracking-wider text-grey-brown font-bold flex items-center gap-1.5">
               <AlertTriangle size={13} className="text-burnt-sienna" /> Overlap Risk Analysis
             </h2>
 
             <div className={`p-3 rounded-lg space-y-2 border transition-all ${
-              isLight ? "bg-[#fcf8f2]" : "bg-black/20"
+              isLight ? "bg-[#f5f6f6]" : "bg-black/20"
             } ${currentRisk.bg}`}>
               <div className="flex justify-between items-center">
                 <span className="text-[9px] uppercase font-bold text-grey-brown tracking-wider">Forecast</span>
@@ -834,7 +832,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
         {/* MIDDLE COLUMN: Task List & Backlog Queue (4 spans) */}
         <section className="lg:col-span-4 flex flex-col gap-6 h-full">
           <div className={`p-5 rounded-xl border flex flex-col h-[680px] transition-all duration-300 ${
-            isLight ? "bg-white border-[#e5e5e5] shadow-sm" : "bg-[#0c0805]/40 border border-cork-shadow/60 backdrop-blur-xl"
+            isLight ? "bg-white border-[#b0b7b5] shadow-sm" : "bg-[#06141B]/40 border border-cork-shadow/60 backdrop-blur-xl"
           }`}>
             <div className="flex justify-between items-center pb-2 border-b border-cork-shadow/20 mb-4">
               <div className="flex items-center gap-2">
@@ -875,10 +873,10 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                       className={`p-3.5 rounded-lg cursor-pointer transition-all relative overflow-hidden group border ${
                         isSelected
                           ? isLight 
-                            ? "bg-[#fff7ed] border-burnt-sienna/50 shadow-sm" 
+                            ? "bg-[#f0f4f4] border-burnt-sienna/50 shadow-sm" 
                             : "bg-white/[0.05] border-burnt-sienna/40"
                           : isLight
-                          ? "bg-[#faf6f0] border-[#e5e5e5] hover:bg-white"
+                          ? "bg-[#f0f2f2] border-[#b0b7b5] hover:bg-white"
                           : "bg-black/30 border-white/5 hover:bg-white/[0.01]"
                       }`}
                     >
@@ -945,10 +943,10 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                       className={`p-3.5 rounded-lg cursor-pointer transition-all border ${
                         isSelected
                           ? isLight 
-                            ? "bg-[#fff7ed] border-burnt-sienna/50 shadow-sm" 
+                            ? "bg-[#f0f4f4] border-burnt-sienna/50 shadow-sm" 
                             : "bg-white/[0.05] border-burnt-sienna/40"
                           : isLight
-                          ? "bg-[#faf6f0] border-[#e5e5e5] hover:bg-white"
+                          ? "bg-[#f0f2f2] border-[#b0b7b5] hover:bg-white"
                           : "bg-black/30 border-white/5 hover:bg-white/[0.01]"
                       }`}
                     >
@@ -1034,7 +1032,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                     }}
                     title="Reset Focus Slot"
                     className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all ${
-                      isLight ? "bg-white border-[#e5e5e5] text-grey-brown hover:bg-[#faf6f0]" : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                      isLight ? "bg-white border-[#b0b7b5] text-grey-brown hover:bg-[#f0f2f2]" : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
                     }`}
                   >
                     <RotateCcw size={12} />
@@ -1123,7 +1121,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
 
           {/* CODE SCAFFOLD PANEL */}
           <div className={`p-5 rounded-xl border flex flex-col justify-between h-[450px] transition-all duration-300 ${
-            isLight ? "bg-white border-[#e5e5e5] shadow-sm" : "bg-[#0c0805]/40 border border-cork-shadow/60 backdrop-blur-xl"
+            isLight ? "bg-white border-[#b0b7b5] shadow-sm" : "bg-[#06141B]/40 border border-cork-shadow/60 backdrop-blur-xl"
           }`}>
             <div className="min-h-0 flex-1 flex flex-col overflow-y-auto pr-1">
               <div className="flex justify-between items-center pb-2 border-b border-cork-shadow/20 mb-3 shrink-0">
@@ -1149,7 +1147,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                 <div className="space-y-3 min-h-0 flex-1 flex flex-col">
                   
                   {/* Code preview codeblock */}
-                  <div className="bg-[#211b16] rounded-lg p-3 border border-cork-shadow/80 font-mono text-[10.5px] overflow-auto max-h-40 relative group shrink-0">
+                  <div className="bg-[#162530] rounded-lg p-3 border border-cork-shadow/80 font-mono text-[10.5px] overflow-auto max-h-40 relative group shrink-0">
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => {
@@ -1169,7 +1167,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
 
                   {/* Terminal commands run path */}
                   {scaffold.terminal_commands && scaffold.terminal_commands.length > 0 && (
-                    <div className="p-2.5 bg-[#171412] border border-cork-shadow/60 rounded-md font-mono text-[10px] text-burnt-sienna flex items-center gap-2 shrink-0">
+                    <div className="p-2.5 bg-[#0e1b25] border border-cork-shadow/60 rounded-md font-mono text-[10px] text-burnt-sienna flex items-center gap-2 shrink-0">
                       <Terminal size={11} className="text-grey-brown" />
                       <span className="text-grey-brown">Terminal:</span>
                       <span className="text-warm-cream/90 font-semibold truncate flex-1">{scaffold.terminal_commands.join(" && ")}</span>
@@ -1233,7 +1231,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
 
                 {materializeResult && (
                   <div className={`p-2.5 border rounded-md text-[10.5px] flex flex-col gap-1 font-mono ${
-                    isLight ? "bg-[#fdf9f4] border-orange-200" : "bg-burnt-sienna/5 border-burnt-sienna/20"
+                    isLight ? "bg-[#f0f4f4] border-[#9BA8AB]/30" : "bg-burnt-sienna/5 border-burnt-sienna/20"
                   }`}>
                     <span className="text-burnt-sienna font-bold text-[9px] uppercase">WORKSPACE FOLDER READY</span>
                     <span className="text-grey-brown break-all">{materializeResult.workspace_path}</span>
@@ -1261,7 +1259,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                     disabled={checkingProgress}
                     className={`py-2.5 px-1 border rounded font-mono text-[10px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1 cursor-pointer ${
                       isLight 
-                        ? "bg-[#faf6f0] border-[#d2c2b0] hover:bg-white text-studio-black" 
+                        ? "bg-[#f0f2f2] border-[#b0b7b5] hover:bg-white text-studio-black" 
                         : "bg-white/5 border-white/10 hover:bg-white/10 text-white"
                     }`}
                   >
@@ -1301,7 +1299,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "180px", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="bg-[#171412] border-t border-cork-shadow/80 w-full px-6 py-4 flex flex-col z-20 shadow-[0_-10px_35px_rgba(0,0,0,0.6)] overflow-hidden rounded-t-2xl shrink-0"
+            className="bg-[#0e1b25] border-t border-cork-shadow/80 w-full px-6 py-4 flex flex-col z-20 shadow-[0_-10px_35px_rgba(0,0,0,0.6)] overflow-hidden rounded-t-2xl shrink-0"
           >
             <div className="flex justify-between items-center mb-2 shrink-0">
               <span className="text-[9.5px] font-mono text-burnt-sienna font-bold tracking-widest uppercase flex items-center gap-1.5">

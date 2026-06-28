@@ -3,13 +3,13 @@
 
 @theme {
   /* Design manual custom colors */
-  --color-studio-black: #100904;
-  --color-warm-cream: #ffedd7;
-  --color-cork-shadow: #40372e;
-  --color-dark-cork: #382416;
-  --color-burnt-sienna: #dc5000;
-  --color-grey-brown: #6c5f51;
-  --color-forest-grid: #445231;
+  --color-studio-black: #06141B;
+  --color-warm-cream: #CCD0CF;
+  --color-cork-shadow: #253745;
+  --color-dark-cork: #11212D;
+  --color-burnt-sienna: #9BA8AB;
+  --color-grey-brown: #4A5C6A;
+  --color-forest-grid: #253745;
 
   /* Fonts */
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -46,8 +46,8 @@ html, body {
 
 /* Light theme overrides */
 .light {
-  background-color: #ffedd7; /* Warm Cream canvas */
-  color: #100904; /* Studio Black text */
+  background-color: #CCD0CF; /* Silver Gray canvas */
+  color: #06141B; /* Dark Slate text */
 }
 
 /* Selection aesthetics */
@@ -58,7 +58,7 @@ html, body {
 
 .light ::selection {
   background-color: var(--color-burnt-sienna);
-  color: #ffedd7;
+  color: #CCD0CF;
 }
 
 /* Custom scrollbar matching the dark cork aesthetic */
@@ -68,25 +68,25 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #100904;
+  background: #06141B;
 }
 
 .light ::-webkit-scrollbar-track {
-  background: #ffedd7;
+  background: #CCD0CF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #382416;
+  background: #11212D;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #dc5000;
+  background: #9BA8AB;
 }
 
 /* Light theme text and background color overrides for visibility */
 .light .light\:text-studio-black {
-  color: #100904 !important;
+  color: #06141B !important;
 }
 
 .light .text-warm-cream,
@@ -96,41 +96,41 @@ html, body {
 .light .text-warm-cream\/40,
 .light .text-warm-cream\/35,
 .light .text-warm-cream\/30 {
-  color: #100904 !important;
+  color: #06141B !important;
 }
 
 .light .text-grey-brown {
-  color: #4b3e32 !important;
+  color: #253745 !important;
 }
 
 .light .border-warm-cream {
-  border-color: #100904 !important;
+  border-color: #06141B !important;
 }
 
 .light .border-warm-cream\/10 {
-  border-color: rgba(16, 9, 4, 0.15) !important;
+  border-color: rgba(6, 20, 27, 0.15) !important;
 }
 
 .light .border-warm-cream\/20 {
-  border-color: rgba(16, 9, 4, 0.25) !important;
+  border-color: rgba(6, 20, 27, 0.25) !important;
 }
 
 .light .border-warm-cream\/30 {
-  border-color: rgba(16, 9, 4, 0.35) !important;
+  border-color: rgba(6, 20, 27, 0.35) !important;
 }
 
 /* Override background colors in cards and badges in light mode */
 .light .bg-studio-black\/40 {
-  background-color: rgba(255, 237, 215, 0.6) !important;
+  background-color: rgba(204, 208, 207, 0.6) !important;
 }
 
-.light .bg-\[\#382416\]\/20 {
-  background-color: rgba(56, 36, 22, 0.12) !important;
+.light .bg-\[\#11212D\]\/20 {
+  background-color: rgba(17, 33, 45, 0.12) !important;
 }
 
-.light .bg-\[\#100904\] {
-  background-color: #fff6eb !important;
-  border-color: rgba(56, 36, 22, 0.25) !important;
+.light .bg-\[\#06141B\] {
+  background-color: #f0f2f2 !important;
+  border-color: rgba(17, 33, 45, 0.25) !important;
 }
 
 

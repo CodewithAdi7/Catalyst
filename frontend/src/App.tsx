@@ -81,7 +81,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 overflow-x-hidden ${theme === "light" ? "bg-[#ffedd7] text-[#100904]" : "bg-[#100904] text-[#ffedd7]"}`}>
+    <div className={`min-h-screen transition-colors duration-500 overflow-x-hidden ${theme === "light" ? "bg-[#CCD0CF] text-[#06141B]" : "bg-[#06141B] text-[#CCD0CF]"}`}>
       {/* App Loading screen */}
       {isLoading && <AppLoader theme={theme as any} />}
 
@@ -224,7 +224,7 @@ export default function App() {
                 <button
                   id="play-video-chip"
                   onClick={() => setIsVideoOpen(true)}
-                  className="absolute bottom-0 right-6 md:right-12 flex items-center gap-2.5 p-2 pr-4 bg-dark-cork/40 hover:bg-[#382416]/90 border border-warm-cream/10 hover:border-burnt-sienna rounded-xl transition-all duration-300 cursor-pointer shadow-xl max-w-xs group"
+                  className="absolute bottom-0 right-6 md:right-12 flex items-center gap-2.5 p-2 pr-4 bg-dark-cork/40 hover:bg-[#11212D]/90 border border-warm-cream/10 hover:border-burnt-sienna rounded-xl transition-all duration-300 cursor-pointer shadow-xl max-w-xs group"
                 >
                   <div className="w-10 h-10 bg-burnt-sienna/10 rounded-lg flex items-center justify-center text-burnt-sienna group-hover:bg-burnt-sienna group-hover:text-warm-cream transition-all duration-300">
                     <Play className="w-4 h-4" />
@@ -410,7 +410,7 @@ export default function App() {
             {/* SECTION 4: CONTACT & WAITLIST SECTION */}
             <section
               id="contact"
-              className="py-32 border-t border-dashed border-cork-shadow/60 flex flex-col justify-center items-center text-center bg-[#100904]/20"
+              className="py-32 border-t border-dashed border-cork-shadow/60 flex flex-col justify-center items-center text-center bg-[#06141B]/20"
             >
                 <motion.div 
                   initial={{ opacity: 0, y: 40, scale: 0.98 }}

@@ -46,7 +46,7 @@ export default function ThreeDCalendar() {
   // Milestone details
   const milestones: Record<number, { task: string; sprints: string[]; status: string }> = {
     15: {
-      task: "Launch Oryzo AI Portal",
+      task: "Launch Catalyst",
       sprints: ["Draft hero layout", "Design 3D calendar widget", "Code sprint stopwatch"],
       status: "Deadline in 2 hours - AI Sprint Ready",
     },
@@ -108,7 +108,7 @@ export default function ThreeDCalendar() {
           {/* Depth Layer: Cork Ambient Backing Grid (translateZ) */}
           <div
             style={{ transform: "translateZ(-10px)" }}
-            className="absolute inset-0 rounded-2xl bg-[#382416]/10 border border-[#382416]/30 pointer-events-none"
+            className="absolute inset-0 rounded-2xl bg-[#11212D]/10 border border-[#11212D]/30 pointer-events-none"
           />
 
           {/* Depth Layer: Interactive Headers */}

@@ -11,15 +11,15 @@ export default function AppLoader({ theme = "dark" }: AppLoaderProps) {
 
   return (
     <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center transition-colors duration-500 ${
-      isLight ? "bg-[#ffedd7] text-studio-black" : "bg-studio-black text-warm-cream"
+      isLight ? "bg-[#CCD0CF] text-studio-black" : "bg-studio-black text-warm-cream"
     }`}>
       {/* Luma Spin Loader */}
       <div className="relative w-[65px] aspect-square">
         <span className={`absolute rounded-[50px] animate-loaderAnim shadow-[inset_0_0_0_3.5px] ${
-          isLight ? "shadow-[#382416]" : "shadow-warm-cream"
+          isLight ? "shadow-[#11212D]" : "shadow-warm-cream"
         }`} />
         <span className={`absolute rounded-[50px] animate-loaderAnim animation-delay shadow-[inset_0_0_0_3.5px] ${
-          isLight ? "shadow-[#382416]" : "shadow-warm-cream"
+          isLight ? "shadow-[#11212D]" : "shadow-warm-cream"
         }`} />
         
         {/* Style tag inject for the keyframes physics */}

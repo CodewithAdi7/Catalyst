@@ -74,12 +74,12 @@ export default function ShapeHeroBackground({ theme = "dark" }: ShapeHeroBackgro
       <div 
         className={`absolute inset-0 transition-colors duration-500 ${
           isLight 
-            ? "bg-gradient-to-b from-[#ffedd7] via-[#ffedd7] to-[#fff3e5]" 
-            : "bg-gradient-to-b from-[#100904] via-[#100904] to-[#0a0502]"
+            ? "bg-gradient-to-b from-[#CCD0CF] via-[#CCD0CF] to-[#dbe0df]" 
+            : "bg-gradient-to-b from-[#06141B] via-[#06141B] to-[#030d12]"
         }`} 
       />
       <div 
-        className={`absolute inset-0 transition-opacity duration-500 bg-[radial-gradient(circle_at_50%_-20%,rgba(220,80,0,0.12),transparent_70%)] ${
+        className={`absolute inset-0 transition-opacity duration-500 bg-[radial-gradient(circle_at_50%_-20%,rgba(155,168,171,0.15),transparent_70%)] ${
           isLight ? "opacity-40" : "opacity-100"
         }`} 
       />
@@ -99,7 +99,7 @@ export default function ShapeHeroBackground({ theme = "dark" }: ShapeHeroBackgro
         width={500}
         height={120}
         rotate={-15}
-        gradient={isLight ? "from-[#382416]/[0.08]" : "from-[#382416]/[0.22]"}
+        gradient={isLight ? "from-[#11212D]/[0.08]" : "from-[#11212D]/[0.22]"}
         className="right-[-10%] md:right-[-5%] top-[70%] md:top-[75%]"
       />
 
@@ -126,7 +126,7 @@ export default function ShapeHeroBackground({ theme = "dark" }: ShapeHeroBackgro
         width={220}
         height={60}
         rotate={-10}
-        gradient={isLight ? "from-[#6c5f51]/[0.08]" : "from-[#6c5f51]/[0.15]"}
+        gradient={isLight ? "from-[#4A5C6A]/[0.08]" : "from-[#4A5C6A]/[0.15]"}
         className="left-[35%] md:left-[40%] top-[2%] md:top-[5%]"
       />
     </div>
