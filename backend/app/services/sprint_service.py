@@ -51,7 +51,7 @@ class SprintService:
         if os.getenv("VERCEL"):
             self.workspace_root = Path("/tmp") / "generated_workspace"
         else:
-            self.workspace_root = Path.cwd() / "generated_workspace"
+            self.workspace_root = Path.home() / "Desktop" / "generated_workspace"
 
     async def initialize_sprint(
         self, request: SprintInitializationRequest
@@ -76,7 +76,7 @@ class SprintService:
         )
 
         app_installed = True
-        if request.preferred_app:
+        if request.preferred_app and not os.getenv("VERCEL"):
             app_key = self._normalize_app_name(request.preferred_app)
             if app_key not in {"default", "terminalonly"}:
                 executable = self._resolve_app_executable(app_key)
