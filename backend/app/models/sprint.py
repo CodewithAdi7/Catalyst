@@ -1,4 +1,4 @@
-﻿from datetime import datetime
+from datetime import datetime
 from enum import Enum
 from pathlib import Path
 
@@ -12,6 +12,11 @@ class MicroTask(BaseModel):
     description: str
 
 
+class AdditionalFile(BaseModel):
+    file_path: str
+    boilerplate_code: str
+
+
 class CodeScaffold(BaseModel):
     terminal_commands: list[str]
     file_path: str  # Primary file path (for backward compatibility)
@@ -19,7 +24,7 @@ class CodeScaffold(BaseModel):
     documentation_links: list[str]
     user_guidance: str = ""  # Clear, non-technical guidance for the user
     design_inspiration: str = ""  # Design tips and best practices
-    additional_files: dict[str, str] = Field(default_factory=dict)  # {file_path: boilerplate_code}
+    additional_files: list[AdditionalFile] = Field(default_factory=list)
 
 
 class CalendarEvent(BaseModel):

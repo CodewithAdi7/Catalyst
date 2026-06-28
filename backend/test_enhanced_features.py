@@ -42,7 +42,7 @@ scaffold = init_data['first_step_scaffold']
 # Check for new fields
 has_user_guidance = bool(scaffold.get('user_guidance', ''))
 has_design_inspiration = bool(scaffold.get('design_inspiration', ''))
-additional_files = scaffold.get('additional_files', {})
+additional_files = scaffold.get('additional_files', [])
 
 print(f"✅ User Guidance: {'Yes' if has_user_guidance else 'No'}")
 if has_user_guidance:
@@ -53,7 +53,8 @@ if has_design_inspiration:
     print(f"   🎨 {scaffold['design_inspiration'][:150]}...")
 
 print(f"\n✅ Additional Files to Create: {len(additional_files)}")
-for file_path in list(additional_files.keys())[:3]:
+for file_info in additional_files[:3]:
+    file_path = file_info.get('file_path') if isinstance(file_info, dict) else getattr(file_info, 'file_path', '')
     print(f"   📄 {file_path}")
 
 print()

@@ -271,10 +271,10 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
             if (timerRef.current) clearInterval(timerRef.current);
             return 0;
           }
-          // Accelerated clock ticks to give immediate feedback under demonstration/evaluations
-          return prev - 8;
+          // Standard clock ticks for 15-minute sprint
+          return prev - 1;
         });
-      }, 200);
+      }, 1000);
     } else {
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -1015,11 +1015,16 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                 <div className="text-3xl font-mono font-bold tracking-widest">
                   {formatTimer(timerSeconds)}
                 </div>
-                <div className="text-[11px] text-grey-brown font-medium max-w-[280px] truncate">
+                <div className="text-[11px] text-grey-brown font-medium max-w-[280px] truncate font-sans">
                   {timeline.length > 0
                     ? `Slot ${activeStepIndex + 1}/${timeline.length}: ${timeline[activeStepIndex]?.title}`
                     : "Ready to focus. Initialize a sprint to launch."}
                 </div>
+                {timeline.length > 0 && timeline[activeStepIndex]?.description && (
+                  <div className="text-[10px] text-grey-brown/80 mt-1 max-w-[320px] bg-burnt-sienna/5 p-2 rounded border border-burnt-sienna/10 leading-relaxed max-h-24 overflow-y-auto whitespace-pre-wrap font-sans font-normal">
+                    {timeline[activeStepIndex]?.description}
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center gap-2">
@@ -1089,14 +1094,14 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
               <span className="text-[9px] uppercase tracking-widest text-grey-brown font-bold block mb-1">
                 SPRINT ROADMAP SLOTS
               </span>
-              <div className="max-h-28 overflow-y-auto space-y-1.5 pr-1 font-mono text-[11px]">
+              <div className="max-h-60 overflow-y-auto space-y-1.5 pr-1 font-mono text-[11px]">
                 {timeline.map((item, idx) => {
                   const isDone = idx < activeStepIndex;
                   const isActive = idx === activeStepIndex;
                   return (
                     <div
                       key={item.id}
-                      className={`flex items-center justify-between p-2 rounded transition-colors ${
+                      className={`flex flex-col p-2 rounded transition-colors ${
                         isActive
                           ? "bg-burnt-sienna/10 border border-burnt-sienna/20 text-burnt-sienna font-semibold"
                           : isDone
@@ -1104,14 +1109,21 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                           : "text-grey-brown"
                       }`}
                     >
-                      <div className="flex items-center gap-2 truncate">
-                        <span className="text-[9px] opacity-60">#{idx + 1}</span>
-                        <span className="truncate">{item.title}</span>
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2 truncate">
+                          <span className="text-[9px] opacity-60 font-mono">#{idx + 1}</span>
+                          <span className="truncate">{item.title}</span>
+                        </div>
+                        <div className="shrink-0 pl-2">
+                          {isDone && <CheckCircle size={10} className="text-emerald-500" />}
+                          {isActive && <div className="w-1.5 h-1.5 rounded-full bg-burnt-sienna animate-ping" />}
+                        </div>
                       </div>
-                      <div className="shrink-0 pl-2">
-                        {isDone && <CheckCircle size={10} className="text-emerald-500" />}
-                        {isActive && <div className="w-1.5 h-1.5 rounded-full bg-burnt-sienna animate-ping" />}
-                      </div>
+                      {isActive && item.description && (
+                        <div className="text-[10px] mt-1.5 leading-relaxed font-sans font-normal opacity-90 pl-5 border-l border-burnt-sienna/20 whitespace-pre-wrap text-left">
+                          {item.description}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -1120,7 +1132,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
           )}
 
           {/* CODE SCAFFOLD PANEL */}
-          <div className={`p-5 rounded-xl border flex flex-col justify-between h-[450px] transition-all duration-300 ${
+          <div className={`p-5 rounded-xl border flex flex-col justify-between h-[580px] transition-all duration-300 ${
             isLight ? "bg-white border-[#b0b7b5] shadow-sm" : "bg-[#06141B]/40 border border-cork-shadow/60 backdrop-blur-xl"
           }`}>
             <div className="min-h-0 flex-1 flex flex-col overflow-y-auto pr-1">
@@ -1147,7 +1159,7 @@ export default function OryzoApp({ theme = "dark" }: OryzoAppProps) {
                 <div className="space-y-3 min-h-0 flex-1 flex flex-col">
                   
                   {/* Code preview codeblock */}
-                  <div className="bg-[#162530] rounded-lg p-3 border border-cork-shadow/80 font-mono text-[10.5px] overflow-auto max-h-40 relative group shrink-0">
+                  <div className="bg-[#162530] rounded-lg p-3 border border-cork-shadow/80 font-mono text-[10.5px] overflow-auto max-h-72 relative group shrink-0">
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => {

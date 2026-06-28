@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "motion/react";
 import {
   ChevronDown,
   Sparkles,
@@ -31,6 +31,24 @@ export default function App() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [isWaitlisted, setIsWaitlisted] = useState(false);
+
+  // Scroll animations hooks and mappings
+  const { scrollY, scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  // Parallax mappings for Hero
+  const heroY = useTransform(scrollY, [0, 800], [0, 180]);
+  const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const bgShapesY = useTransform(scrollY, [0, 1000], [0, 250]);
+  const calendarY = useTransform(scrollY, [0, 800], [0, -60]);
+
+  // Floating effects/Parallax for Cards
+  const featuresCardY = useTransform(scrollY, [200, 1200], [40, -40]);
+  const productCardY = useTransform(scrollY, [1000, 2200], [50, -50]);
 
   // Toggle theme class on document element
   useEffect(() => {
@@ -82,6 +100,13 @@ export default function App() {
 
   return (
     <div className={`min-h-screen transition-colors duration-500 overflow-x-hidden ${theme === "light" ? "bg-[#CCD0CF] text-[#06141B]" : "bg-[#06141B] text-[#CCD0CF]"}`}>
+      {/* Scroll Progress Indicator */}
+      {!isAppLaunched && (
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-1 bg-burnt-sienna origin-left z-[100]"
+          style={{ scaleX }}
+        />
+      )}
       {/* App Loading screen */}
       {isLoading && <AppLoader theme={theme as any} />}
 
@@ -135,8 +160,10 @@ export default function App() {
               id="intro"
               className="relative min-h-screen flex flex-col justify-between pt-24 pb-12 overflow-hidden"
             >
-              {/* Shape Landing Hero Background */}
-              <ShapeHeroBackground theme={theme} />
+              {/* Shape Landing Hero Background with parallax scroll */}
+              <motion.div style={{ y: bgShapesY, opacity: heroOpacity }} className="absolute inset-0 z-0">
+                <ShapeHeroBackground theme={theme} />
+              </motion.div>
 
               {/* Edge label - Vertical Rotated Label */}
               <div className="absolute right-4 md:right-8 top-1/3 origin-right rotate-90 translate-x-1/2 pointer-events-none select-none z-10">
@@ -147,8 +174,8 @@ export default function App() {
 
               {/* Hero Main Content */}
               <div className="flex-1 w-full max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10 my-auto">
-                {/* Left Side: Cinematic Headline */}
-                <div className="lg:col-span-7 flex flex-col gap-6 text-left">
+                {/* Left Side: Cinematic Headline with parallax */}
+                <motion.div style={{ y: heroY, opacity: heroOpacity }} className="lg:col-span-7 flex flex-col gap-6 text-left">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -197,16 +224,17 @@ export default function App() {
                       EXPLORE FEATURES
                     </button>
                   </motion.div>
-                </div>
+                </motion.div>
 
-                {/* Right Side: Interactive 3D Calendar Object */}
+                {/* Right Side: Interactive 3D Calendar Object with parallax */}
                 <motion.div
+                  style={{ y: calendarY, opacity: heroOpacity }}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                   className="lg:col-span-5 flex justify-center items-center"
                 >
-                  <ThreeDCalendar />
+                  <ThreeDCalendar theme={theme} />
                 </motion.div>
               </div>
 
@@ -263,9 +291,17 @@ export default function App() {
                       The Sprint Attack
                     </span>
                   </div>
-                  <h2 className="font-sans font-medium text-heading-lg leading-tight text-warm-cream dark:text-warm-cream light:text-studio-black">
-                    ELIMINATE THE BLANK SCREEN SENSATION.
-                  </h2>
+                  <div className="overflow-hidden mb-1">
+                    <motion.h2 
+                      initial={{ y: "100%" }}
+                      whileInView={{ y: 0 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                      className="font-sans font-medium text-heading-lg leading-tight text-warm-cream dark:text-warm-cream light:text-studio-black"
+                    >
+                      ELIMINATE THE BLANK SCREEN SENSATION.
+                    </motion.h2>
+                  </div>
                   <p className="font-sans text-body text-grey-brown leading-relaxed">
                     Over 80% of task procrastination happens before the first line is written or the first block is drawn. When you stare at an empty canvas, the friction is highest.
                   </p>
@@ -284,6 +320,7 @@ export default function App() {
 
                 {/* Right Side: Image Comparison Slider with scroll animations */}
                 <motion.div 
+                  style={{ y: featuresCardY }}
                   initial={{ opacity: 0, scale: 0.96 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true, margin: "-120px" }}
@@ -304,6 +341,7 @@ export default function App() {
                 
                 {/* Left Side: Milestone list with scroll animations */}
                 <motion.div 
+                  style={{ y: productCardY }}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-120px" }}
@@ -385,9 +423,17 @@ export default function App() {
                       Passive Reminders
                     </span>
                   </div>
-                  <h2 className="font-sans font-medium text-heading-lg leading-tight text-warm-cream dark:text-warm-cream light:text-studio-black">
-                    TIME SPRINT ATTACK METRICS.
-                  </h2>
+                  <div className="overflow-hidden mb-1">
+                    <motion.h2 
+                      initial={{ y: "100%" }}
+                      whileInView={{ y: 0 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                      className="font-sans font-medium text-heading-lg leading-tight text-warm-cream dark:text-warm-cream light:text-studio-black"
+                    >
+                      TIME SPRINT ATTACK METRICS.
+                    </motion.h2>
+                  </div>
                   <p className="font-sans text-body text-grey-brown leading-relaxed">
                     Long, unstructured deadlines create a feeling of infinite time, which amplifies anxiety and triggers procrastination. 
                   </p>
@@ -426,9 +472,17 @@ export default function App() {
                     </span>
                   </div>
 
-                  <h2 className="font-sans font-medium text-heading-lg md:text-[51px] leading-[0.9] text-warm-cream dark:text-warm-cream light:text-studio-black tracking-tight">
-                    SECURE EARLY ACCESS.
-                  </h2>
+                  <div className="overflow-hidden mb-1">
+                    <motion.h2 
+                      initial={{ y: "100%" }}
+                      whileInView={{ y: 0 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                      className="font-sans font-medium text-heading-lg md:text-[51px] leading-[0.9] text-warm-cream dark:text-warm-cream light:text-studio-black tracking-tight"
+                    >
+                      SECURE EARLY ACCESS.
+                    </motion.h2>
+                  </div>
                   
                   <p className="font-sans text-subheading text-grey-brown max-w-sm mx-auto">
                     Catalyst is currently rolling out. Sign up to lock in free lifetime workspace credentials and start swift immediately.

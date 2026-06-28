@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Calendar, CheckCircle2, Circle, Flame, Sparkles, Clock } from "lucide-react";
 
-export default function ThreeDCalendar() {
+export default function ThreeDCalendar({ theme = "dark" }: { theme?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
@@ -10,6 +10,7 @@ export default function ThreeDCalendar() {
   const [selectedDay, setSelectedDay] = useState<number | null>(15);
 
   const { scrollYProgress } = useScroll();
+  const isLight = theme === "light";
 
   // Scroll animations: tilt the calendar in 3D, shift slightly on scale & floating path
   const scrollRotateX = useTransform(scrollYProgress, [0, 0.5, 1], [0, 12, -8]);
@@ -89,18 +90,24 @@ export default function ThreeDCalendar() {
           }}
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
           style={{ transformStyle: "preserve-3d" }}
-          className="relative w-80 rounded-2xl bg-studio-black border border-warm-cream/20 shadow-2xl p-6 flex flex-col gap-4 overflow-visible"
+          className={`relative w-80 rounded-2xl border shadow-2xl p-6 flex flex-col gap-4 overflow-visible transition-colors duration-300 ${
+            isLight ? "bg-white border-[#b0b7b5] text-[#06141B]" : "bg-studio-black border-warm-cream/20 text-warm-cream"
+          }`}
         >
           {/* Depth Layer: Floating AI Suggestion Overlay Chip from Immersive UI mockup */}
           <div
             style={{ transform: "translateZ(55px) rotate(12deg)" }}
-            className="absolute -top-8 -right-14 w-48 bg-dark-cork border border-warm-cream/30 rounded-xl p-3.5 shadow-2xl flex flex-col justify-center pointer-events-none"
+            className={`absolute -top-8 -right-14 w-48 border rounded-xl p-3.5 shadow-2xl flex flex-col justify-center pointer-events-none transition-colors duration-300 ${
+              isLight ? "bg-emerald-50 border-emerald-200 shadow-md" : "bg-dark-cork border-warm-cream/30"
+            }`}
           >
             <div className="text-[9px] text-grey-brown font-mono uppercase tracking-widest mb-1 flex items-center gap-1">
               <span className="w-1.5 h-1.5 bg-burnt-sienna rounded-full animate-pulse" />
               AI SUGGESTION
             </div>
-            <div className="text-[11px] leading-tight text-warm-cream">
+            <div className={`text-[11px] leading-tight transition-colors duration-300 ${
+              isLight ? "text-emerald-900 font-medium" : "text-warm-cream"
+            }`}>
               "Start with a 3-point outline for Section A..."
             </div>
           </div>
@@ -108,7 +115,9 @@ export default function ThreeDCalendar() {
           {/* Depth Layer: Cork Ambient Backing Grid (translateZ) */}
           <div
             style={{ transform: "translateZ(-10px)" }}
-            className="absolute inset-0 rounded-2xl bg-[#11212D]/10 border border-[#11212D]/30 pointer-events-none"
+            className={`absolute inset-0 rounded-2xl pointer-events-none transition-colors duration-300 ${
+              isLight ? "bg-[#11212D]/5 border border-[#11212D]/15" : "bg-[#11212D]/10 border border-[#11212D]/30"
+            }`}
           />
 
           {/* Depth Layer: Interactive Headers */}
@@ -145,22 +154,24 @@ export default function ThreeDCalendar() {
               const isCompleted = completedDays.includes(day);
               const isSelected = selectedDay === day;
 
-              let dayStyle = "text-warm-cream/50";
+              let dayStyle = isLight ? "text-[#06141B]/40" : "text-warm-cream/50";
               if (isSprint) {
                 dayStyle = "text-burnt-sienna font-bold";
               }
               if (isCompleted) {
-                dayStyle = "text-green-500/80 line-through";
+                dayStyle = isLight ? "text-green-700/70 line-through font-semibold" : "text-green-500/80 line-through";
               }
               if (isSelected) {
-                dayStyle = "bg-burnt-sienna text-warm-cream border border-warm-cream/40 rounded-lg scale-110";
+                dayStyle = isLight
+                  ? "bg-[#4A5C6A] text-white border border-[#4A5C6A] rounded-lg scale-110 font-bold"
+                  : "bg-burnt-sienna text-warm-cream border border-warm-cream/40 rounded-lg scale-110";
               }
 
               return (
                 <button
                   key={day}
                   onClick={() => isSprint && setSelectedDay(day)}
-                  className={`relative h-8 w-8 flex items-center justify-center text-[11px] font-mono rounded-md hover:bg-dark-cork/20 transition-all duration-200 cursor-pointer ${dayStyle}`}
+                  className={`relative h-8 w-8 flex items-center justify-center text-[11px] font-mono rounded-md hover:bg-burnt-sienna/10 transition-all duration-200 cursor-pointer ${dayStyle}`}
                 >
                   {day}
                   {isSprint && !isSelected && (
@@ -180,7 +191,9 @@ export default function ThreeDCalendar() {
           {/* Floating Details Panel (translateZ(45px)) */}
           <div
             style={{ transform: "translateZ(45px)" }}
-            className="relative bg-dark-cork/30 border border-cork-shadow p-3.5 rounded-xl flex flex-col gap-2.5 shadow-xl transition-all duration-300"
+            className={`relative border p-3.5 rounded-xl flex flex-col gap-2.5 shadow-xl transition-all duration-300 ${
+              isLight ? "bg-[#f9fafb] border-[#b0b7b5]" : "bg-dark-cork/30 border-cork-shadow"
+            }`}
           >
             {selectedDay && milestones[selectedDay] ? (
               <>
@@ -200,7 +213,9 @@ export default function ThreeDCalendar() {
                   {milestones[selectedDay].sprints.map((s, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                       <Clock className="w-3 h-3 text-grey-brown" />
-                      <span className="font-mono text-[9px] text-warm-cream/80">
+                      <span className={`font-mono text-[9px] transition-colors duration-300 ${
+                        isLight ? "text-[#06141B] font-medium" : "text-warm-cream/80"
+                      }`}>
                         {idx * 15}:00 - {s}
                       </span>
                     </div>

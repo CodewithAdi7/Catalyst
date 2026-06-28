@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 import os
 import re
 import shutil
@@ -121,6 +121,23 @@ class SprintService:
         if not self.gemini.is_configured:
             return self._fallback_timeline(request.monolithic_task, request.tech_stack, task_count, request.task_type)
 
+        web_search_context = ""
+        if request.task_type == TaskType.coding:
+            try:
+                search_query = f"standard folder structure and step-by-step milestones to build: {request.monolithic_task} using {', '.join(request.tech_stack)}"
+                logger.info("Performing web search grounding for query: %s", search_query)
+                web_search_context = await self.gemini.generate_text(
+                    system_prompt=(
+                        "You are an expert technical consultant. Search the web and identify the best-practice folder structure, "
+                        "key components, and build phases for the given coding task and tech stack. Return a concise summary of the "
+                        "standard layout (with directory names and suggested files) and best practice steps."
+                    ),
+                    user_prompt=search_query,
+                    enable_search=True
+                )
+            except Exception as e:
+                logger.warning("Web search grounding failed: %s", e)
+
         try:
             result = await self.gemini.generate_structured(
                 system_prompt=SLICING_PROMPT_CONSTRAINT,
@@ -129,6 +146,7 @@ class SprintService:
                     f"Task: {request.monolithic_task}\n"
                     f"Tech stack or tools: {', '.join(request.tech_stack)}\n"
                     f"Estimated hours: {request.estimated_total_hours}\n"
+                    f"Web search guidelines and structures for this task: {web_search_context}\n"
                     f"Return exactly {task_count} milestones, each with duration_minutes set to 15."
                 ),
                 response_model=TimelineResponse,
@@ -218,10 +236,10 @@ class SprintService:
 
         # Create additional files from the scaffold
         files_created = [target_path]
-        for file_path, file_content in request.scaffold.additional_files.items():
-            additional_file_path = workspace / file_path
+        for file_info in request.scaffold.additional_files:
+            additional_file_path = workspace / file_info.file_path
             additional_file_path.parent.mkdir(parents=True, exist_ok=True)
-            additional_file_path.write_text(file_content, encoding="utf-8")
+            additional_file_path.write_text(file_info.boilerplate_code, encoding="utf-8")
             files_created.append(additional_file_path)
 
         # Build user-friendly message with guidance

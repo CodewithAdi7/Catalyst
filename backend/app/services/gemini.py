@@ -47,6 +47,30 @@ class GeminiService:
         payload = self._extract_json(response)
         return response_model.model_validate(payload)
 
+    async def generate_text(
+        self,
+        *,
+        system_prompt: str,
+        user_prompt: str,
+        enable_search: bool = False,
+    ) -> str:
+        if self.client is None:
+            raise RuntimeError("GEMINI_API_KEY is not configured.")
+
+        config = types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            temperature=0.35,
+        )
+        if enable_search:
+            config.tools = [{"google_search": {}}]
+
+        response = await self.client.aio.models.generate_content(
+            model=self.settings.gemini_model,
+            contents=user_prompt,
+            config=config,
+        )
+        return getattr(response, "text", "") or ""
+
     @staticmethod
     def _extract_json(response: Any) -> Any:
         if getattr(response, "parsed", None) is not None:

@@ -44,7 +44,7 @@ export default function ImageComparison() {
           ◀ Blank Screen Block
         </span>
         <span className="font-mono text-[10px] text-green-500 tracking-widest uppercase">
-          Oryzo Assisted Init ▶
+          Catalyst Assisted Init ▶
         </span>
       </div>
 
@@ -61,7 +61,7 @@ export default function ImageComparison() {
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
               <span className="font-mono text-[11px] text-warm-cream font-semibold">
-                workspace.config.ts — Oryzo Auto-Init
+                workspace.config.ts — Catalyst Auto-Init
               </span>
             </div>
             <span className="font-mono text-[10px] text-burnt-sienna bg-burnt-sienna/10 px-2 py-0.5 rounded-full">
