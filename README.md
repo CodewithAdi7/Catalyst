@@ -10,6 +10,8 @@
 
 ## Live app link :-  https://catalyst-opal-five.vercel.app/
 
+### Note:- The above link will open the website of my app that explains you about the features and functionality of the app, to test it you have to click on "Launch App" button on the navbar and then start testing.
+
 ##  Key Features
 
 ### 1. AI-Driven "Time Sprint Attack" Slicing
@@ -41,7 +43,7 @@ Catalyst takes a monolithic goal (e.g., *"Build an auth middleware for FastAPI"*
 
 ---
 
-# Note :- The AI scaffolding will write the code scaffolds directly on your machine only when you run the backend locally on your machine as in the above given live link it runs on online server so the AI will not be able to write code scaffold on your machine locally.
+## Note :- The AI scaffolding will write the code scaffolds directly on your machine only when you run the backend locally on your machine as in the above given live link it runs on online server so the AI will not be able to write code scaffold on your machine locally.
 
 ## System Architecture
 
